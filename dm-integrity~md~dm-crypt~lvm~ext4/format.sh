@@ -2,7 +2,7 @@
 
 set -ex
 
-. "$(dirname "$0")/config.sh"
+. "$(dirname "$0")/common.sh"
 
 for disk in "${DISKS[@]}"; do
     integritysetup format --batch-mode --integrity sha256 /dev/${disk}3

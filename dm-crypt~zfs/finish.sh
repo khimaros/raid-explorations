@@ -2,7 +2,8 @@
 
 set -ex
 
-. "$(dirname "$0")/config.sh"
+. "$(dirname "$0")/../config.sh"
+. "$(dirname "$0")/common.sh"
 
 chroot /mnt apt install -y zfs-initramfs keyutils
 
@@ -21,4 +22,7 @@ EOF
 
 chroot /mnt update-grub
 
-chroot /mnt zpool export -a
+mount | grep -v zfs | tac | awk '/\/mnt/ {print $3}' | \
+    xargs -i{} umount -lf {}
+
+zpool export -a

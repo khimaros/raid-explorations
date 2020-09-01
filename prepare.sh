@@ -2,9 +2,12 @@
 
 set -ex
 
-. default/config.sh
+. config.sh
+. default/common.sh
 
-apt update && apt install -y "${DEFAULT_PACKAGES[@]}"
+apt update && apt install -y "${EXTRA_PACKAGES[@]}"
+
+apt install -y parted dosfstools mdadm "${RAID_PACKAGES[@]}"
 
 wipefs -a "${DISKS_DEVICES[@]}"
 

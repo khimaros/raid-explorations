@@ -2,7 +2,7 @@
 
 ## deployment
 
-Boot Debian LiveCD
+Boot Debian LiveCD.
 
 ```
 sudo -i
@@ -12,11 +12,17 @@ apt update && apt install -y vim git
 git clone https://github.com/khimaros/raid-explorations
 
 cd raid-explorations
+```
 
-# adjust default symlink and edit default/config.sh as needed.
+Adjust `default` symlink and edit `config.sh`.
 
+Start the installation:
+
+```
 ./run.sh
 ```
+
+Reboot.
 
 ## experiments
 

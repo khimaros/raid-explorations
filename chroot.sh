@@ -3,6 +3,7 @@
 set -ex
 
 . /config.sh
+. /common.sh
 
 [[ -f /apt.sh ]] && /apt.sh
 
@@ -12,9 +13,9 @@ export LANG=C.UTF-8
 
 apt update
 
-apt install -y "${DEFAULT_PACKAGES[@]}"
-
 apt install -y "${RAID_PACKAGES[@]}"
+
+apt install -y "${EXTRA_PACKAGES[@]}"
 
 DEBIAN_FRONTEND=noninteractive apt install -y locales console-setup
 
@@ -36,6 +37,8 @@ iface ens3 inet dhcp
 EOF
 
 egrep "^.*? (/boot|/boot/efi|/) " /proc/self/mounts > /etc/fstab
+
+[[ -f /after.sh ]] && /after.sh
 
 apt full-upgrade --autoremove --purge
 

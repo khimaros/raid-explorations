@@ -2,7 +2,8 @@
 
 set -ex
 
-. "$(dirname "$0")/config.sh"
+. "$(dirname "$0")/../config.sh"
+. "$(dirname "$0")/common.sh"
 
 chroot /mnt apt install -y keyutils
 

@@ -2,7 +2,7 @@
 
 set -ex
 
-. "$(dirname "$0")/config.sh"
+. "$(dirname "$0")/common.sh"
 
 mkdir -p /mnt/etc/udev/rules.d/
 mkdir -p /mnt/etc/initramfs-tools/hooks/
