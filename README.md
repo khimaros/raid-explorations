@@ -1,12 +1,14 @@
 # raid explorations
 
-## procedure
+## setup
 
 **WARNING**: following these instructions by default will destroy
 all data on `/dev/sd{a,b,c,d}`. It is only recommended to run these
 scripts in a VM or on a machine with no important data.
 
-Boot Debian LiveCD.
+1. Boot a Debian Buster standard LiveCD.
+
+1. Fetch the repository:
 
 ```
 sudo -i
@@ -18,17 +20,55 @@ git clone https://github.com/khimaros/raid-explorations
 cd raid-explorations
 ```
 
-Adjust `default` symlink and edit `config.sh`.
+1. Adjust the `default` symlink depending on the test you want to run.
 
-Start the installation:
+1. Edit `config.sh` to choose the correct drives and RAID level.
+
+1. Start the installation:
 
 ```
 ./run.sh
 ```
 
-Reboot.
+1. Reboot into the new installation.
 
 ## discoveries
+
+### zfs 1MB corruption on 2/4 raidz2 disks
+
+zfs handles heavy corruption within raidz2 parameters without a
+sweat and a scrub corrects all errors. no permanent data loss occurs.
+
+Write 1,000,000 bytes to random positions on two drives:
+
+```
+# for disk in /dev/sd{a,c}3; do ./random_write.py $disk 1000000; done
+
+# reboot
+```
+
+Boot and scrub should complete without incident:
+
+```
+# zpool scrub rpool
+```
+
+### zfs 1KB corruption on 4/4 raidz2 disks
+
+zfs survives random corruption even affecting all disks in a
+raidz2 array. some files become unrecoverable, but the system
+often still boots and the array always reassembles and scrubs.
+
+Write 1000 bytes to random positions on all four drives:
+
+```
+# for disk in /dev/sd{a,b,c,d}3; do ./random_write.py $disk 1000; done
+
+# reboot
+```
+
+depending on which files are corrupted (luck), you may be kicked
+to initramfs. zpool reassembly should still work.
 
 ### dm-integrity + md considered harmful
 
@@ -102,7 +142,7 @@ My undestanding is that dm-integrity could drastically increase the likelihood
 of a full array failure. The risk of this compared with silent bit rot seems to
 be significant. The cure may be worse than the poison.
 
-## experiments
+## appendix
 
 ### random\_write
 
