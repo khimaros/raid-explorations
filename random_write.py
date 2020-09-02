@@ -4,6 +4,10 @@ import os
 import random
 import sys
 
+if len(sys.argv) < 3:
+    print('usage: random_write.py <path> <bytes> [start_pad] [end_pad]')
+    sys.exit(1)
+
 # parse command line arguments
 of = sys.argv[1]
 count = int(sys.argv[2])
