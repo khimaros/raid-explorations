@@ -6,8 +6,8 @@ set -ex
 . "$(dirname "$0")/common.sh"
 
 for disk in "${DISKS[@]}"; do
-    cryptsetup -q luksFormat -c aes-xts-plain64 -s 512 -h sha256 /dev/${disk}3
-    cryptsetup luksOpen /dev/${disk}3 ${disk}3_crypt
+    cryptsetup -q luksFormat -c aes-xts-plain64 -s 512 -h sha256 /dev/${disk}${DISKS_PART_PREFIX}3
+    cryptsetup luksOpen /dev/${disk}${DISKS_PART_PREFIX}3 ${disk}${DISKS_PART_PREFIX}3_crypt
 done
 
 modprobe zfs

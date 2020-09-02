@@ -8,8 +8,8 @@ set -ex
 chroot /mnt apt install -y zfs-initramfs keyutils
 
 for disk in "${DISKS[@]}"; do
-    uuid=$(blkid -s UUID -o value /dev/${disk}3)
-    echo "${disk}3_crypt UUID=${uuid} none luks,discard,initramfs,keyscript=decrypt_keyctl"
+    uuid=$(blkid -s UUID -o value /dev/${disk}${DISKS_PART_PREFIX}3)
+    echo "${disk}${DISKS_PART_PREFIX}3_crypt UUID=${uuid} none luks,discard,initramfs,keyscript=decrypt_keyctl"
 done > /mnt/etc/crypttab
 
 echo REMAKE_INITRD=yes > /mnt/etc/dkms/zfs.conf

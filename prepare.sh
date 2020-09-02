@@ -20,8 +20,8 @@ for disk in "${DISKS_DEVICES[@]}"; do
     parted $disk mkpart primary ext4 513MiB 1024MiB
     parted $disk mkpart primary 1024MiB 100%
     sleep 1
-    mkfs.msdos -F 32 -s 1 -n EFI ${disk}1
-    mkfs.ext4 -F -m 0 ${disk}2
+    mkfs.msdos -F 32 -s 1 -n EFI ${disk}${DISKS_PART_PREFIX}1
+    mkfs.ext4 -F -m 0 ${disk}${DISKS_PART_PREFIX}2
 done
 
 apt install -y "${RAID_PACKAGES[@]}"

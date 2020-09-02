@@ -175,6 +175,37 @@ Write 1000 bytes to random positions on all four drives:
 depending on which files are corrupted (luck), you may be kicked
 to initramfs. zpool reassembly should still work.
 
+### dm-crypt + btrfs: 30KB corruption on 1/2 raid1 disks
+
+btrfs handles heavy corruption within raid1 parameters without a
+sweat and a scrub corrects all errors. no permanent data loss occurs.
+
+Write 30,000 bytes to random positions on two drives:
+
+```
+# for disk in /dev/sd{a,c}3; do ./random_write.py $disk 30000; done
+
+# reboot
+```
+
+Boot and scrub should complete without incident:
+
+```
+# btrfs scrub start -B -d /
+
+# btrfs device stats -z /
+```
+
+### dm-crypt + btrfs: 30KB corruption on 2/4 raid1 (metadata) / raid6 disks
+
+Write 30,000 bytes to random positions on two drives:
+
+```
+# for disk in /dev/sd{a,c}3; do ./random_write.py $disk 30000; done
+
+# reboot
+```
+
 ### dm-crypt + btrfs: 30KB corruption on 2/4 raid6 disks
 
 btrfs fails catastrophically in this case despite the corruption

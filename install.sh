@@ -14,7 +14,7 @@ mount --rbind /proc /mnt/proc
 mount --rbind /sys /mnt/sys
 mount --rbind /run /mnt/run
 
-mount ${DISKS_DEVICES}2 /mnt/boot
+mount ${DISKS_DEVICES}${DISKS_PART_PREFIX}2 /mnt/boot
 
 [[ -f default/apt.sh ]] && cp default/apt.sh /mnt/apt.sh
 [[ -f default/after.sh ]] && cp default/after.sh /mnt/after.sh

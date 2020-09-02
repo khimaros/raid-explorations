@@ -6,8 +6,8 @@ set -ex
 . "$(dirname "$0")/common.sh"
 
 for disk in "${DISKS[@]}"; do
-    integritysetup format --batch-mode --integrity sha256 /dev/${disk}3
-    integritysetup open --integrity sha256 /dev/${disk}3 ${disk}3_int
+    integritysetup format --batch-mode --integrity sha256 /dev/${disk}${DISKS_PART_PREFIX}3
+    integritysetup open --integrity sha256 /dev/${disk}${DISKS_PART_PREFIX}3 ${disk}${DISKS_PART_PREFIX}3_int
 done
 
 mdadm --create --level=${RAID_LEVEL} --raid-devices=4 --bitmap=internal /dev/md0 "${INTEGRITY_DEVICES[@]}"
