@@ -7,7 +7,7 @@ set -ex
 
 apt update && apt install -y "${EXTRA_PACKAGES[@]}"
 
-apt install -y parted dosfstools mdadm "${RAID_PACKAGES[@]}"
+apt install -y parted dosfstools "${RAID_PACKAGES[@]}"
 
 wipefs -a "${DISKS_DEVICES[@]}"
 

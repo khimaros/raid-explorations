@@ -1,12 +1,12 @@
 EXTRA_PACKAGES=(vim git screen)
 
-DISKS_GLOB="sd{a,b,c,d}"
+DISKS_GLOB="nvme{0,1,2,3}n1"
 
 # for nvme drives this is usually "p"
-DISKS_PART_PREFIX=""
+DISKS_PART_PREFIX="p"
 
 # enable uefi boot
-#BOOT_MODE="efi"
+BOOT_MODE="efi"
 
 # raid level to use for array
 #   zfs: raidz1, raidz2, raidz3
