@@ -14,3 +14,4 @@ done > /mnt/etc/crypttab
 
 # FIXME: add root partition to /mnt/etc/fstab
 
+chroot /mnt update-initramfs -c -k all

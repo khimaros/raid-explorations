@@ -18,7 +18,6 @@ mkdir -p /mnt/boot
 mount ${DISKS_DEVICES}${DISKS_PART_PREFIX}2 /mnt/boot
 
 [[ -f default/apt.sh ]] && cp default/apt.sh /mnt/apt.sh
-[[ -f default/after.sh ]] && cp default/after.sh /mnt/after.sh
 
 cp config.sh /mnt/config.sh
 cp default/common.sh /mnt/common.sh

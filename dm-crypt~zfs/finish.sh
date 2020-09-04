@@ -18,6 +18,10 @@ cat <<EOF > /mnt/etc/default/grub.d/zfs.cfg
 GRUB_CMDLINE_LINUX="root=ZFS=rpool/ROOT/debian"
 EOF
 
+chroot /mnt update-initramfs -c -k all
+
+chroot /mnt update-grub
+
 mount | grep -v zfs | tac | awk '/\/mnt/ {print $3}' | \
     xargs -i{} umount -lf {}
 

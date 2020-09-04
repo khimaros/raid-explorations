@@ -17,7 +17,9 @@ apt install -y "${RAID_PACKAGES[@]}"
 
 apt install -y "${EXTRA_PACKAGES[@]}"
 
-DEBIAN_FRONTEND=noninteractive apt install -y locales console-setup
+DEBIAN_FRONTEND=noninteractive apt install -y locales
+
+#apt install -y console-setup
 
 #dpkg-reconfigure locales
 #dpkg-reconfigure keyboard-configuration
@@ -36,8 +38,6 @@ apt install -y linux-image-amd64
 ETHDEV=$(ip addr show | awk '/inet.*brd/{print $NF; exit}')
 test -n "$ETHDEV" || ETHDEV=enp0s1
 echo -e "\nauto $ETHDEV\niface $ETHDEV inet dhcp\n" >> /etc/network/interfaces.d/$ETHDEV
-
-[[ -f /after.sh ]] && /after.sh
 
 update-initramfs -c -k all
 
