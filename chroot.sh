@@ -37,11 +37,11 @@ ETHDEV=$(ip addr show | awk '/inet.*brd/{print $NF; exit}')
 test -n "$ETHDEV" || ETHDEV=enp0s1
 echo -e "\nauto $ETHDEV\niface $ETHDEV inet dhcp\n" >> /etc/network/interfaces.d/$ETHDEV
 
-egrep "^.*? (/boot|/boot/efi|/) " /proc/self/mounts > /etc/fstab
+[[ -f /after.sh ]] && /after.sh
 
 update-initramfs -c -k all
 
-[[ -f /after.sh ]] && /after.sh
+update-grub
 
 apt full-upgrade --autoremove --purge
 

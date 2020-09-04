@@ -36,10 +36,15 @@ if [[ "$BOOT_MODE" = "efi" ]]; then
     #    umount /mnt/boot/efi
     #done
 
-    mount ${DISK_DEVICES}${DISKS_PART_PREFIX}1 /mnt/boot/efi
+    mount ${DISKS_DEVICES}${DISKS_PART_PREFIX}1 /mnt/boot/efi
     chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot/efi --no-nvram --recheck --no-floppy
     umount /mnt/boot/efi
 fi
+
+uuid=$(blkid -s PARTUUID -o value ${DISKS_DEVICES}${DISKS_PART_PREFIX}2)
+echo "PARTUUID=${uuid} /boot ext4 rw,relatime 0 0" > /mnt/etc/fstab
+uuid=$(blkid -s PARTUUID -o value ${DISKS_DEVICES}${DISKS_PART_PREFIX}1)
+echo "PARTUUID=${uuid} /boot/efi vfat rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,utf8,errors=remount-ro 0 0" >> /mnt/etc/fstab
 
 rm /mnt/config.sh
 rm /mnt/common.sh

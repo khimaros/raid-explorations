@@ -12,5 +12,5 @@ for disk in "${DISKS[@]}"; do
     echo "${disk}${DISKS_PART_PREFIX}3_crypt UUID=${uuid} none luks,discard,keyscript=decrypt_keyctl"
 done > /mnt/etc/crypttab
 
-chroot /mnt update-initramfs -u -k all
+# FIXME: add root partition to /mnt/etc/fstab
 

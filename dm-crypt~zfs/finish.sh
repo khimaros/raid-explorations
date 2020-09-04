@@ -14,13 +14,9 @@ done > /mnt/etc/crypttab
 
 echo REMAKE_INITRD=yes > /mnt/etc/dkms/zfs.conf
 
-chroot /mnt update-initramfs -u -k all
-
 cat <<EOF > /mnt/etc/default/grub.d/zfs.cfg
 GRUB_CMDLINE_LINUX="root=ZFS=rpool/ROOT/debian"
 EOF
-
-chroot /mnt update-grub
 
 mount | grep -v zfs | tac | awk '/\/mnt/ {print $3}' | \
     xargs -i{} umount -lf {}
