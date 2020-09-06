@@ -1,5 +1,22 @@
 # raid explorations
 
+This repository contains explorations in modern forms of full-disk
+encrypted RAID on Debian GNU/Linux. Based on my observations in these
+experiments, **I recommend dm-crypt based ZFS raidz2.**
+
+Of the configurations explored, ZFS degraded the most gracefully, even
+when corruption was well beyond the parameters defined by the RAID
+level under test. ZFS clearly identifies corrupt files in `zpool status`.
+
+Even with megabytes of randomized corruption, the ZFS pool was always
+able to be assembled and scrubbed, and there were no kernel panics or
+other showstopping issues except where the operating system could no
+longer carry on due to missing critical files.
+
+Further, based on these observations, **I STRONGLY recommend against
+using dm-integrity in combination with md for any important data**; as
+few as 100 bytes of corruption can render a disk completely unusable.
+
 ## setup
 
 **WARNING**: following these instructions by default will destroy
