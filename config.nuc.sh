@@ -1,3 +1,5 @@
+DEBIAN_RELEASE="buster"
+
 EXTRA_PACKAGES=(vim git screen)
 
 DISKS_GLOB="nvme{0,1,2,3}n1"

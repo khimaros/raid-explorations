@@ -7,7 +7,7 @@ set -ex
 
 apt install -y debootstrap
 
-debootstrap buster /mnt/
+debootstrap ${DEBIAN_RELEASE} /mnt/
 
 mount --rbind /dev /mnt/dev
 mount --rbind /proc /mnt/proc

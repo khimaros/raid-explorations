@@ -1,3 +1,5 @@
+DEBIAN_RELEASE="buster"
+
 EXTRA_PACKAGES=(vim git screen)
 
 DISKS_GLOB="sd{a,b,c,d}"
