@@ -10,7 +10,7 @@ for disk in "${DISKS[@]}"; do
     cryptsetup luksOpen /dev/${disk}${DISKS_PART_PREFIX}3 ${disk}${DISKS_PART_PREFIX}3_crypt
 done
 
-mkfs.btrfs -f -m raid1 -d ${RAID_LEVEL} "${CRYPT_DEVICES[@]}"
+mkfs.btrfs -f -m ${RAID_METADATA_LEVEL:-${RAID_LEVEL}} -d ${RAID_LEVEL} "${CRYPT_DEVICES[@]}"
 
 mount ${CRYPT_DEVICES} /mnt
 

@@ -15,3 +15,8 @@ DISKS_PART_PREFIX=""
 #   btrfs: raid1, raid1c3, raid5, raid6, raid10
 #   md: 0, 1, 5, 6, 10
 RAID_LEVEL="raidz2"
+
+# raid level to use for metadata
+# defaults to $RAID_LEVEL
+#   btrfs: raid1, raid1c3, raid5, raid6, raid10
+#RAID_METADATA_LEVEL="raid1c3"
