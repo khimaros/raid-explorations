@@ -282,7 +282,7 @@ Here we can see the corruption is already impacting the running system.
 
 Force reboot. Kernel panic.
 
-### linux 5.8 + dm-integrity + md + dm-crypt + lvm + ext4: 1MB corruption on 2/4 raid6 disks
+### linux 5.7 + dm-integrity + md + dm-crypt + lvm + ext4: 1MB corruption on 2/4 raid6 disks
 
 md handles heavy corruption within raid6 parameters without a
 sweat and a scrub corrects all errors. no permanent data loss occurs.
@@ -303,7 +303,7 @@ Boot and scrub complete without incident:
 # mdadm --wait /dev/md0
 ```
 
-### linux 5.8 + dm-integrity + md + dm-crypt + lvm + ext4: 1KB corruption on 4/4 raid6 disks
+### linux 5.7 + dm-integrity + md + dm-crypt + lvm + ext4: 1KB corruption on 4/4 raid6 disks
 
 md survives random corruption even affecting all disks in a
 raid6 array. some files become unrecoverable, but the system
@@ -319,6 +319,37 @@ Write 1,000 bytes to random positions on two drives:
 
 depending on which files are corrupted (luck), you may be kicked
 to initramfs. array reassembly should still work.
+
+in some cases, boot will hang while trying to mount the filesystem.
+in this case you can add `break` to your GRUB command line to enter
+the `initramfs` console.
+
+in some cases, it may be preferable to boot into LiveCD and
+use the rescue script:
+
+```
+# ./rescue.sh
+
+# umount /mnt
+
+# mdadm --action=repair /dev/md0
+
+# fsck.ext4 -y -f -c /dev/vg0/root
+
+# reboot
+```
+
+to recover from the initramfs console:
+
+```
+(initramfs) cryptsetup luksOpen /dev/md0 md0_crypt
+
+(initramfs) vgchange -a y vg0
+
+(initramfs) mount /dev/mapper/vg0-root /root
+```
+
+Press Ctrl+D to resume boot.
 
 ### linux 4.19 + dm-integrity + md + dm-crypt + lvm + ext4: 1KB corruption on 4/4 raid6 disks
 

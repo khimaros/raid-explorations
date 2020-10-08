@@ -7,7 +7,10 @@ set -ex
 
 for disk in "${DISKS[@]}"; do
     cryptsetup -q luksFormat -c aes-xts-plain64 -s 512 -h sha256 /dev/${disk}${DISKS_PART_PREFIX}3
-    cryptsetup luksOpen /dev/${disk}${DISKS_PART_PREFIX}3 ${disk}${DISKS_PART_PREFIX}3_crypt
+done
+
+for disk in "${DISKS[@]}"; do
+    cryptsetup luksOpen /dev/${disk}${DISKS_PART_PREFIX}3 ${disk}${DISK_PART_PREFIX}3_crypt
 done
 
 modprobe zfs
@@ -24,4 +27,3 @@ zfs create -o canmount=off -o mountpoint=none rpool/ROOT
 zfs create -o canmount=noauto -o mountpoint=/ rpool/ROOT/debian
 
 zfs mount rpool/ROOT/debian
-

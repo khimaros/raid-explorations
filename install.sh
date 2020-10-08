@@ -29,6 +29,7 @@ chroot /mnt /chroot.sh
 
 if [[ "$BOOT_MODE" = "efi" ]]; then
     mkdir -p /mnt/boot/efi
+
     #for disk in "${DISKS_DEVICES[@]}"; do
     #    mount ${disk}${DISKS_PART_PREFIX}1 /mnt/boot/efi
     #    chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot/efi --no-nvram --recheck --no-floppy
@@ -45,8 +46,4 @@ echo "PARTUUID=${uuid} /boot ext4 rw,relatime 0 0" > /mnt/etc/fstab
 uuid=$(blkid -s PARTUUID -o value ${DISKS_DEVICES}${DISKS_PART_PREFIX}1)
 echo "PARTUUID=${uuid} /boot/efi vfat rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,utf8,errors=remount-ro 0 0" >> /mnt/etc/fstab
 
-rm /mnt/config.sh
-rm /mnt/common.sh
-rm /mnt/chroot.sh
-rm -f /mnt/apt.sh
-
+rm -f /mnt/config.sh /mnt/common.sh /mnt/chroot.sh /mnt/apt.sh
