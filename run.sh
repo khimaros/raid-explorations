@@ -13,3 +13,5 @@ set -ex
 ./install.sh
 
 ./${RAID_EXPLORATION}/finish.sh
+
+echo "Debian installation completed successfully! Reboot required."

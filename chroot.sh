@@ -5,11 +5,15 @@ set -ex
 . /config.sh
 . /common.sh
 
-[[ -f /apt.sh ]] && /apt.sh
+export LANG=C.UTF-8
 
 passwd
 
-export LANG=C.UTF-8
+[[ -n "${DEBIAN_BACKPORTS}" ]] && cat <<EOF > /etc/apt/sources.list.d/backports.list
+deb http://deb.debian.org/debian/ ${DEBIAN_RELEASE}-backports main contrib
+EOF
+
+[[ -f /apt.sh ]] && /apt.sh
 
 apt update
 

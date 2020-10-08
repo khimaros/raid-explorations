@@ -1,7 +1,13 @@
+# debian release to bootstrap
 DEBIAN_RELEASE="bullseye"
 
+# enable debian backports
+#DEBIAN_BACKPORTS="yes"
+
+# utility packages unrelated to raid
 EXTRA_PACKAGES=(vim git screen)
 
+# device files to use in raid array
 DISKS_GLOB="nvme{0,1,2,3}n1"
 
 # for nvme drives this is usually "p"

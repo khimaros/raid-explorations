@@ -18,6 +18,19 @@ using dm-integrity in combination with md on Linux <5.4-rc1 for
 any important data**; as few as 100 bytes of corruption can render
 a disk completely unusable.
 
+## caveats
+
+Corruption of metadata (generally at the start of the disk) on
+dm based devices generally renders the device unusable. ZFS and
+btrfs distribute metadata across the entire device. However, if
+backed by dm-crypt, these protections are void. It's a good idea to
+backup device metadata, particularly with dm-crypt.
+
+ZFS and btrfs provide better tooling for detection of corrupted files, and
+scans take a small fraction of the time required for a full md scan.
+Corruption is only detected on dm-integrity based systems by inspecting
+`dmesg` output after a read attempt is made (eg. during a full scan).
+
 ## setup
 
 **WARNING**: following these instructions by default will destroy
@@ -50,15 +63,15 @@ $ sudo -i
 
 ## discoveries
 
-### dm-integrity + md on linux <5.4-rc1 considered harmful
+### linux <5.4-rc1 + dm-integrity + md considered harmful
+
+This outcome has been verified with Linux kernel 4.19 and should affect any
+kernel which doesn't include [this EILSEQ patch](https://github.com/torvalds/linux/commit/b76b4715eba0d0ed574f58918b29c1b2f0fa37a8).
 
 tl;dr, on a system with four 10GiB drives in a RAID-5 configuration using the
 setup described above, **200 bytes of randomly distributed corruption across
 two drives (in non-overlapping stripes) could result in unrecoverable failure
 of the entire array**.
-
-This outcome has been verified with Linux kernel 4.19 and should affect any
-kernel which doesn't include [this EILSEQ patch](https://github.com/torvalds/linux/commit/b76b4715eba0d0ed574f58918b29c1b2f0fa37a8).
 
 To break the integrity device, write 100 random bytes to random
 locations on `/dev/sda3`:
@@ -144,7 +157,7 @@ In summary, dm-integrity could drastically increase the likelihood of a full
 array failure. The risk of this compared with silent bit rot seems to
 be significant. The cure may be worse than the poison.
 
-### dm-crypt + zfs: 1MB corruption on 2/4 raidz2 disks
+### linux 4.19 + dm-crypt + zfs: 1MB corruption on 2/4 raidz2 disks
 
 zfs handles heavy corruption within raidz2 parameters without a
 sweat and a scrub corrects all errors. no permanent data loss occurs.
@@ -175,7 +188,7 @@ according to PMT in `#zfsonlinux`:
 > mangling a block is going to raise CKSUM errors from all the
 > disks the block is across
 
-### dm-crypt + zfs: 1KB corruption on 4/4 raidz2 disks
+### linux 4.19 + dm-crypt + zfs: 1KB corruption on 4/4 raidz2 disks
 
 zfs survives random corruption even affecting all disks in a
 raidz2 array. some files become unrecoverable, but the system
@@ -192,7 +205,7 @@ Write 1,000 bytes to random positions on all four drives:
 depending on which files are corrupted (luck), you may be kicked
 to initramfs. zpool reassembly should still work.
 
-### dm-crypt + btrfs: 1MB corruption on 1/2 raid1 disks
+### linux 4.19 + dm-crypt + btrfs: 1MB corruption on 1/2 raid1/raid1 disks
 
 btrfs handles heavy corruption within raid1 parameters without a
 sweat and a scrub corrects all errors. no permanent data loss occurs.
@@ -213,7 +226,7 @@ Boot and scrub complete without incident:
 # btrfs device stats -z /
 ```
 
-### dm-crypt + btrfs: 1MB corruption on 2/4 raid1c3 disks
+### linux 5.8 + dm-crypt + btrfs: 1MB corruption on 2/4 raid1c3/raid1c3 disks
 
 btrfs handles heavy corruption within raid1c3 parameters without a
 sweat and a scrub corrects all errors. no permanent data loss occurs.
@@ -234,7 +247,7 @@ Boot and scrub complete without incident:
 # btrfs device stats -z /
 ```
 
-### dm-crypt + btrfs: 1KB corruption on 4/4 raid1c3 disks
+### linux 5.8 + dm-crypt + btrfs: 1KB corruption on 4/4 raid1c3 disks
 
 btrfs survives random corruption even affecting all disks in a
 raid1c3 array. some files become unrecoverable, but the system
@@ -251,7 +264,7 @@ Write 1,000 bytes to random positions on all four drives:
 depending on which files are corrupted (luck), you may be kicked
 to initramfs. array reassembly should still work.
 
-### dm-crypt + btrfs: 30KB corruption on 2/4 raid6 disks
+### linux 5.8 + dm-crypt + btrfs: 30KB corruption on 2/4 raid6/raid6 disks
 
 btrfs fails catastrophically in this case despite the corruption
 being within expected parameters for a raid6 array.
@@ -269,7 +282,45 @@ Here we can see the corruption is already impacting the running system.
 
 Force reboot. Kernel panic.
 
-### dm-integrity + md + dm-crypt + lvm + ext4: 1KB corruption on 4/4 raid6 disks
+### linux 5.8 + dm-integrity + md + dm-crypt + lvm + ext4: 1MB corruption on 2/4 raid6 disks
+
+md handles heavy corruption within raid6 parameters without a
+sweat and a scrub corrects all errors. no permanent data loss occurs.
+
+Write 1,000,000 bytes to random positions on two drives:
+
+```
+# for disk in /dev/sd{a,b}3; do ./random_write.py $disk 1000000; done
+
+# reboot
+```
+
+Boot and scrub complete without incident:
+
+```
+# mdadm --action=check /dev/md0
+
+# mdadm --wait /dev/md0
+```
+
+### linux 5.8 + dm-integrity + md + dm-crypt + lvm + ext4: 1KB corruption on 4/4 raid6 disks
+
+md survives random corruption even affecting all disks in a
+raid6 array. some files become unrecoverable, but the system
+often still boots and the array always reassembles and scrubs.
+
+Write 1,000 bytes to random positions on two drives:
+
+```
+# for disk in /dev/sd{a,b,c,d}3; do ./random_write.py $disk 1000; done
+
+# reboot
+```
+
+depending on which files are corrupted (luck), you may be kicked
+to initramfs. array reassembly should still work.
+
+### linux 4.19 + dm-integrity + md + dm-crypt + lvm + ext4: 1KB corruption on 4/4 raid6 disks
 
 **WARNING**: see warning above about the real world reliability
 of devices in this configuration.
@@ -278,7 +329,7 @@ if you repair checksums on a dm-integrity device **before stopping the md
 array**, the array is actually quite resilient to corruption even when
 the corruption is spread across all disks in the array.
 
-Write 1000 bytes to random positions on all four drives:
+Write 1,000 bytes to random positions on all four drives:
 
 ```
 # for disk in /dev/sd{a,b,c,d}3; do ./random_write.py $disk 1000; done
@@ -311,18 +362,24 @@ This can be used on block devices, for example, to test RAID or integrity behavi
 random_write.py <path> <bytes> [start_pad] [end_pad]
 ```
 
-By default, the first 20MiB and last 16MiB of the file are avoided.
+By default, the first 512MiB and last 128MiB of the file are avoided.
 
 #### examples
 
-Write 1 byte to a random location on /dev/sdb4:
+Write 1 byte to a random location on /dev/sdb3:
 
 ```
-# ./random_write.py /dev/sdb4 1
+# ./random_write.py /dev/sdb3 1
 ```
 
-Write 1000 bytes to /dev/sdb4:
+Write 1000 bytes to /dev/sdb3:
 
 ```
-# ./random_write.py /dev/sdb4 1000
+# ./random_write.py /dev/sdb3 1000
+```
+
+Write 1000 bytes to /dev/sdb3, avoiding first 1KiB
+
+```
+# ./random_write.py /dev/sdb3 1000 1048576
 ```
