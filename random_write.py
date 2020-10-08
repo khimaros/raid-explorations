@@ -11,12 +11,14 @@ if len(sys.argv) < 3:
 # parse command line arguments
 of = sys.argv[1]
 count = int(sys.argv[2])
-start_pad = 20 * 1024 * 1024
+start_pad = 512 * 1024 * 1024
 if len(sys.argv) > 3:
     start_pad = int(sys.argv[3])
-end_pad = 16 * 1024 * 1024
+end_pad = 128 * 1024 * 1024
 if len(sys.argv) > 4:
     end_pad = int(sys.argv[4])
+
+print('[*] write %d random bytes to %s (start_pad %d bytes, end_pad %d bytes)' % (count, of, start_pad, end_pad))
 
 # determine the size of the drive in bytes
 fd = os.open(of, os.O_RDONLY)

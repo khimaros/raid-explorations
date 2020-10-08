@@ -2,12 +2,14 @@
 
 set -ex
 
-[[ -f ./default/apt.sh ]] && ./default/apt.sh
+. config.sh
+
+[[ -f "./${RAID_EXPLORATION}/apt.sh" ]] && ./${RAID_EXPLORATION}/apt.sh
 
 ./prepare.sh
 
-./default/format.sh
+./${RAID_EXPLORATION}/format.sh
 
 ./install.sh
 
-./default/finish.sh
+./${RAID_EXPLORATION}/finish.sh

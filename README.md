@@ -14,8 +14,9 @@ other showstopping issues except where the operating system could no
 longer carry on due to missing critical files.
 
 Further, based on these observations, **I STRONGLY recommend against
-using dm-integrity in combination with md for any important data**; as
-few as 100 bytes of corruption can render a disk completely unusable.
+using dm-integrity in combination with md on Linux <5.4-rc1 for
+any important data**; as few as 100 bytes of corruption can render
+a disk completely unusable.
 
 ## setup
 
@@ -23,9 +24,9 @@ few as 100 bytes of corruption can render a disk completely unusable.
 all data on `/dev/sd{a,b,c,d}`. It is only recommended to run these
 scripts in a VM or on a machine with no important data.
 
-1. Boot a Debian Buster standard LiveCD.
+1. Boot a "standard" Debian LiveCD. [buster](https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/), [testing](https://cdimage.debian.org/cdimage/weekly-live-builds/amd64/iso-hybrid/)
 
-1. Fetch the repository:
+1. Fetch this repository:
 
 ```
 $ sudo -i
@@ -37,9 +38,7 @@ $ sudo -i
 # cd raid-explorations
 ```
 
-1. Adjust the `default` symlink depending on the test you want to run.
-
-1. Edit `config.sh` to choose the correct drives and RAID level.
+1. Edit `config.sh` to choose the correct drives, Debian release, and RAID level.
 
 1. Start the installation:
 
@@ -51,14 +50,15 @@ $ sudo -i
 
 ## discoveries
 
-### dm-integrity + md considered harmful
+### dm-integrity + md on linux <5.4-rc1 considered harmful
 
 tl;dr, on a system with four 10GiB drives in a RAID-5 configuration using the
 setup described above, **200 bytes of randomly distributed corruption across
 two drives (in non-overlapping stripes) could result in unrecoverable failure
 of the entire array**.
 
-This outcome has been verified with Linux kernel 4.19 and 5.7.0.
+This outcome has been verified with Linux kernel 4.19 and should affect any
+kernel which doesn't include [this EILSEQ patch](https://github.com/torvalds/linux/commit/b76b4715eba0d0ed574f58918b29c1b2f0fa37a8).
 
 To break the integrity device, write 100 random bytes to random
 locations on `/dev/sda3`:

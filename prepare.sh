@@ -2,8 +2,8 @@
 
 set -ex
 
-. config.sh
-. default/common.sh
+. ./config.sh
+. ./${RAID_EXPLORATION}/common.sh
 
 apt update && apt install -y "${EXTRA_PACKAGES[@]}"
 

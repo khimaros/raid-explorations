@@ -4,18 +4,20 @@ set -ex
 
 . "$(dirname "$0")/common.sh"
 
-mkdir -p /mnt/etc/udev/rules.d/
-mkdir -p /mnt/etc/initramfs-tools/hooks/
 
 uuid=$(blkid -s UUID -o value /dev/md0)
 echo "md0_crypt UUID=${uuid} none luks,discard" >> /mnt/etc/crypttab
 
-echo "/dev/vg0/root / ext4 rw,relatime,errors=remount-ro 0 0" >> /etc/fstab
+echo "/dev/vg0/root / ext4 rw,relatime,errors=remount-ro 0 0" >> /mnt/etc/fstab
+
+mkdir -p /mnt/etc/udev/rules.d/
 
 cat <<EOF > /mnt/etc/udev/rules.d/99-integrity.rules
 ACTION=="add", SUBSYSTEM=="block", ENV{DEVTYPE}=="partition", ENV{ID_FS_TYPE}=="DM_integrity", RUN+="/sbin/integritysetup open --integrity sha256 \$env{DEVNAME} %k_int"
 ACTION=="remove", SUBSYSTEM=="block", ENV{DEVTYPE}=="partition", ENV{ID_FS_TYPE}=="DM_integrity", RUN+="/sbin/integritysetup close %k_int"
 EOF
+
+mkdir -p /mnt/etc/initramfs-tools/hooks/
 
 cat <<EOF > /mnt/etc/initramfs-tools/hooks/integrity
 #!/bin/sh

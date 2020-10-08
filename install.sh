@@ -2,8 +2,8 @@
 
 set -ex
 
-. config.sh
-. default/common.sh
+. ./config.sh
+. ./${RAID_EXPLORATION}/common.sh
 
 apt install -y debootstrap
 
@@ -17,10 +17,10 @@ mount --rbind /run /mnt/run
 mkdir -p /mnt/boot
 mount ${DISKS_DEVICES}${DISKS_PART_PREFIX}2 /mnt/boot
 
-[[ -f default/apt.sh ]] && cp default/apt.sh /mnt/apt.sh
+[[ -f "./${RAID_EXPLORATION}/apt.sh" ]] && cp "./${RAID_EXPLORATION}/apt.sh" /mnt/apt.sh
 
 cp config.sh /mnt/config.sh
-cp default/common.sh /mnt/common.sh
+cp "./${RAID_EXPLORATION}/common.sh" /mnt/common.sh
 cp chroot.sh /mnt/chroot.sh
 
 chmod +x /mnt/chroot.sh
