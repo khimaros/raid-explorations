@@ -5,6 +5,10 @@ set -ex
 . ./config.sh
 . ./${RAID_EXPLORATION}/common.sh
 
+[[ -n "${DEBIAN_BACKPORTS}" ]] && cat <<EOF > /etc/apt/sources.list.d/backports.list
+deb http://deb.debian.org/debian/ ${DEBIAN_RELEASE}-backports main contrib
+EOF
+
 apt update && apt install -y "${EXTRA_PACKAGES[@]}"
 
 apt install -y gdisk dosfstools "${RAID_PACKAGES[@]}"

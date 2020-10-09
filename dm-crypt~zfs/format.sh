@@ -6,7 +6,7 @@ set -ex
 . "$(dirname "$0")/common.sh"
 
 for disk in "${DISKS[@]}"; do
-    cryptsetup -q luksFormat -c aes-xts-plain64 -s 512 -h sha256 /dev/${disk}${DISKS_PART_PREFIX}3
+    cryptsetup -q luksFormat "${CRYPTSETUP_OPTS[@]}" /dev/${disk}${DISKS_PART_PREFIX}3
 done
 
 for disk in "${DISKS[@]}"; do

@@ -15,7 +15,7 @@ done
 
 mdadm --create --level=${RAID_LEVEL} --raid-devices=4 --bitmap=internal /dev/md0 "${INTEGRITY_DEVICES[@]}"
 
-cryptsetup luksFormat -q /dev/md0
+cryptsetup -q luksFormat "${CRYPTSETUP_OPTS[@]}" /dev/md0
 
 cryptsetup luksOpen /dev/md0 md0_crypt
 

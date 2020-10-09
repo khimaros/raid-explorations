@@ -13,6 +13,9 @@ DISKS_GLOB="sd{a,b,c,d}"
 # for nvme drives this is usually "p"
 DISKS_PART_PREFIX=""
 
+# extra args to pass to luksFormat
+CRYPTSETUP_OPTS=(-c aes-xts-plain64 -s 512 -h sha256)
+
 # enable uefi boot
 #BOOT_MODE="efi"
 

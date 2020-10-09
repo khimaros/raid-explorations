@@ -16,6 +16,9 @@ DISKS_PART_PREFIX="p"
 # enable uefi boot
 BOOT_MODE="efi"
 
+# extra args to pass to luksFormat
+CRYPTSETUP_OPTS=(-c aes-xts-plain64 -s 512 -h sha256)
+
 # raid stack and filesystem combination
 RAID_EXPLORATION="dm-integrity~md~dm-crypt~lvm~ext4"
 
