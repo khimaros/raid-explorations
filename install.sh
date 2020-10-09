@@ -17,7 +17,9 @@ mount --rbind /run /mnt/run
 mkdir -p /mnt/boot
 mount ${DISKS_DEVICES}${DISKS_PART_PREFIX}2 /mnt/boot
 
-[[ -f "./${RAID_EXPLORATION}/apt.sh" ]] && cp "./${RAID_EXPLORATION}/apt.sh" /mnt/apt.sh
+if [[ -f "./${RAID_EXPLORATION}/apt.sh" ]]; then
+    cp "./${RAID_EXPLORATION}/apt.sh" /mnt/apt.sh
+fi
 
 cp config.sh /mnt/config.sh
 cp "./${RAID_EXPLORATION}/common.sh" /mnt/common.sh

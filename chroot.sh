@@ -9,11 +9,13 @@ export LANG=C.UTF-8
 
 passwd
 
-[[ -n "${DEBIAN_BACKPORTS}" ]] && cat <<EOF > /etc/apt/sources.list.d/backports.list
+[[ -z "${DEBIAN_BACKPORTS}" ]] || cat <<EOF > /etc/apt/sources.list.d/backports.list
 deb http://deb.debian.org/debian/ ${DEBIAN_RELEASE}-backports main contrib
 EOF
 
-[[ -f /apt.sh ]] && /apt.sh
+if [[ -f /apt.sh ]]; then
+    /apt.sh
+fi
 
 apt update
 

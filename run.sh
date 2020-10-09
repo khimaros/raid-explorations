@@ -4,7 +4,9 @@ set -ex
 
 . config.sh
 
-[[ -f "./${RAID_EXPLORATION}/apt.sh" ]] && ./${RAID_EXPLORATION}/apt.sh
+if [[ -f "./${RAID_EXPLORATION}/apt.sh" ]]; then
+    ./${RAID_EXPLORATION}/apt.sh
+fi
 
 ./prepare.sh
 
