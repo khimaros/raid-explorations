@@ -2,22 +2,22 @@
 DEBIAN_RELEASE="buster"
 
 # enable debian backports
-DEBIAN_BACKPORTS="yes"
+#DEBIAN_BACKPORTS="yes"
 
 # utility packages unrelated to raid
 EXTRA_PACKAGES=(vim git screen)
 
 # device files to use in raid array
-DISKS_GLOB="nvme{0,1,2,3}n1"
+DISKS_GLOB="sd{a,b,c,d}"
 
 # for nvme drives this is usually "p"
-DISKS_PART_PREFIX="p"
+DISKS_PART_PREFIX=""
 
 # extra args to pass to luksFormat
 CRYPTSETUP_OPTS=(-c aes-xts-plain64 -s 512 -h sha256)
 
 # enable uefi boot
-BOOT_MODE="efi"
+#BOOT_MODE="efi"
 
 # raid stack and filesystem combination
 RAID_EXPLORATION="dm-integrity~md~dm-crypt~lvm~ext4"

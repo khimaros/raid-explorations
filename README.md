@@ -61,9 +61,27 @@ $ sudo -i
 
 1. Reboot into the new installation.
 
-## discoveries
+## overview
 
-### linux <5.4-rc1 + dm-integrity + md considered harmful
+ id                                  | kernel | stack            | level           | 1MB @ 2/4 | 1KB @ 4/4 | 1MB @ 1/2
+ ----------------------------------- | ------ | ---------------- | --------------- | --------- | --------- | ---------
+ [exp0](explorations/config.exp0.sh) | 4.19   | md\*             | 6               | FAIL\*\*  | N/A       | N/A
+ [exp1](explorations/config.exp1.sh) | 5.7    | md\*             | 6               | OKAY      | OKAY      | N/A
+ [exp2](explorations/config.exp2.sh) | 5.8    | md\*             | 6               | OKAY      | OKAY      | N/A
+ [exp3](explorations/config.exp3.sh) | 4.19   | dm-crypt + btrfs | raid1/raid1     | N/A       | N/A       | OKAY
+ [exp4](explorations/config.exp4.sh) | 5.8    | dm-crypt + btrfs | raid6/raid6     | FAIL      | N/A       | N/A
+ [exp5](explorations/config.exp5.sh) | 5.8    | dm-crypt + btrfs | raid6/raid1c3   | FAIL      | N/A       | N/A
+ [exp6](explorations/config.exp6.sh) | 5.8    | dm-crypt + btrfs | raid1c3/raid1c3 | OKAY      | OKAY      | N/A
+ [exp7](explorations/config.exp7.sh) | 4.19   | dm-crypt + zfs   | raidz2          | OKAY      | OKAY      | N/A
+ [exp8](explorations/config.exp8.sh) | 5.8    | dm-crypt + zfs   | raidz2          | ?         | ?         | N/A
+
+\* dm-integrity + md + dm-crypt + lvm + ext4
+
+\*\* fails with as few as 100 bytes of corruption
+
+## details
+
+### exp0: linux <5.4-rc1 + dm-integrity + md considered harmful
 
 This outcome has been verified with Linux kernel 4.19 and should affect any
 kernel which doesn't include [this EILSEQ patch](https://github.com/torvalds/linux/commit/b76b4715eba0d0ed574f58918b29c1b2f0fa37a8).
@@ -157,132 +175,35 @@ In summary, dm-integrity could drastically increase the likelihood of a full
 array failure. The risk of this compared with silent bit rot seems to
 be significant. The cure may be worse than the poison.
 
-### linux 4.19 + dm-crypt + zfs: 1MB corruption on 2/4 raidz2 disks
+### exp0: linux 4.19 + dm-integrity + md + dm-crypt + lvm + ext4: 1KB corruption on 4/4 raid6 disks
 
-zfs handles heavy corruption within raidz2 parameters without a
-sweat and a scrub corrects all errors. no permanent data loss occurs.
+**WARNING**: see warning above about the real world reliability
+of devices in this configuration.
 
-Write 1,000,000 bytes to random positions on two drives:
-
-```
-# for disk in /dev/sd{a,c}3; do ./random_write.py $disk 1000000; done
-
-# reboot
-```
-
-Boot and scrub complete without incident:
-
-```
-# zpool scrub rpool
-
-# zpool clear rpool
-```
-
-one initially surprising outcome is that the scrub surfaces CKSUM errors on
-the drives which were untouched. this doesn't seem to have any
-real world impact, but was alarming when first noticed.
-
-according to PMT in `#zfsonlinux`:
-
-> checksummed blocks are striped across RAIDZ disks in a vdev, so
-> mangling a block is going to raise CKSUM errors from all the
-> disks the block is across
-
-### linux 4.19 + dm-crypt + zfs: 1KB corruption on 4/4 raidz2 disks
-
-zfs survives random corruption even affecting all disks in a
-raidz2 array. some files become unrecoverable, but the system
-often still boots and the array always reassembles and scrubs.
+if you repair checksums on a dm-integrity device **before stopping the md
+array**, the array is actually quite resilient to corruption even when
+the corruption is spread across all disks in the array.
 
 Write 1,000 bytes to random positions on all four drives:
 
 ```
 # for disk in /dev/sd{a,b,c,d}3; do ./random_write.py $disk 1000; done
 
-# reboot
-```
+# mdadm --action=check /dev/md0
 
-depending on which files are corrupted (luck), you may be kicked
-to initramfs. zpool reassembly should still work.
-
-### linux 4.19 + dm-crypt + btrfs: 1MB corruption on 1/2 raid1/raid1 disks
-
-btrfs handles heavy corruption within raid1 parameters without a
-sweat and a scrub corrects all errors. no permanent data loss occurs.
-
-Write 1,000,000 bytes to random positions on one drive:
-
-```
-# ./random_write.py /dev/sda3 1000000; done
+# mdadm --wait /dev/md0
 
 # reboot
 ```
 
-Boot and scrub complete without incident:
+In most cases, I've found the system is completely usable.
 
-```
-# btrfs scrub start -B -d /
+Within these constraints, dm-integrity + md has outperformed every other
+RAID configuration on this test, often carrying on with all-disk corruption
+levels climbing to 100KB and beyond. However, given the coincidence of power
+failure and data loss, this setup is still **strongly not recommended**.
 
-# btrfs device stats -z /
-```
-
-### linux 5.8 + dm-crypt + btrfs: 1MB corruption on 2/4 raid1c3/raid1c3 disks
-
-btrfs handles heavy corruption within raid1c3 parameters without a
-sweat and a scrub corrects all errors. no permanent data loss occurs.
-
-Write 1,000,000 bytes to random positions on two drives:
-
-```
-# for disk in /dev/sd{a,c}3; do ./random_write.py $disk 1000000; done
-
-# reboot
-```
-
-Boot and scrub complete without incident:
-
-```
-# btrfs scrub start -B -d /
-
-# btrfs device stats -z /
-```
-
-### linux 5.8 + dm-crypt + btrfs: 1KB corruption on 4/4 raid1c3 disks
-
-btrfs survives random corruption even affecting all disks in a
-raid1c3 array. some files become unrecoverable, but the system
-often still boots and the array always reassembles and scrubs.
-
-Write 1,000 bytes to random positions on all four drives:
-
-```
-# for disk in /dev/sd{a,b,c,d}3; do ./random_write.py $disk 1000; done
-
-# reboot
-```
-
-depending on which files are corrupted (luck), you may be kicked
-to initramfs. array reassembly should still work.
-
-### linux 5.8 + dm-crypt + btrfs: 30KB corruption on 2/4 raid6/raid6 disks
-
-btrfs fails catastrophically in this case despite the corruption
-being within expected parameters for a raid6 array.
-
-Write 30,000 bytes to random positions on two drives:
-
-```
-# for disk in /dev/sd{a,c}3; do ./random_write.py $disk 30000; done
-
-# reboot
-Bus Error
-```
-
-Here we can see the corruption is already impacting the running system.
-
-Force reboot. Kernel panic.
-
-### linux 5.7 + dm-integrity + md + dm-crypt + lvm + ext4: 1MB corruption on 2/4 raid6 disks
+### exp1: linux 5.7 + dm-integrity + md + dm-crypt + lvm + ext4: 1MB corruption on 2/4 raid6 disks
 
 md handles heavy corruption within raid6 parameters without a
 sweat and a scrub corrects all errors. no permanent data loss occurs.
@@ -303,7 +224,7 @@ Boot and scrub complete without incident:
 # mdadm --wait /dev/md0
 ```
 
-### linux 5.7 + dm-integrity + md + dm-crypt + lvm + ext4: 1KB corruption on 4/4 raid6 disks
+### exp1: linux 5.7 + dm-integrity + md + dm-crypt + lvm + ext4: 1KB corruption on 4/4 raid6 disks
 
 md survives random corruption even affecting all disks in a
 raid6 array. some files become unrecoverable, but the system
@@ -351,33 +272,152 @@ to recover from the initramfs console:
 
 Press Ctrl+D to resume boot.
 
-### linux 4.19 + dm-integrity + md + dm-crypt + lvm + ext4: 1KB corruption on 4/4 raid6 disks
+### exp3: linux 4.19 + dm-crypt + btrfs: 1MB corruption on 1/2 raid1/raid1 disks
 
-**WARNING**: see warning above about the real world reliability
-of devices in this configuration.
+btrfs handles heavy corruption within raid1 parameters without a
+sweat and a scrub corrects all errors. no permanent data loss occurs.
 
-if you repair checksums on a dm-integrity device **before stopping the md
-array**, the array is actually quite resilient to corruption even when
-the corruption is spread across all disks in the array.
+Write 1,000,000 bytes to random positions on one drive:
+
+```
+# ./random_write.py /dev/sda3 1000000; done
+
+# reboot
+```
+
+Boot and scrub complete without incident:
+
+```
+# btrfs scrub start -B -d /
+
+# btrfs device stats -z /
+```
+
+### exp4: linux 5.8 + dm-crypt + btrfs: 1MB corruption on 2/4 raid6/raid6 disks
+
+btrfs fails catastrophically in this case despite the corruption
+being within expected parameters for a raid6 array.
+
+Write 1,000,000 bytes to random positions on two drives:
+
+```
+# for disk in /dev/sd{a,c}3; do ./random_write.py $disk 1000000; done
+
+# reboot
+Bus Error
+```
+
+Here we can see the corruption is already impacting the running system.
+
+Force reboot. Kernel panic.
+
+### exp5: linux 5.8 + dm-crypt + btrfs: 1MB corruption on 2/4 raid6/raid1c3 disks
+
+btrfs has mixed results from moderate corruption within raid6/raid1c3
+parameters. the system boots successfully, but scrub produces a handfull
+of uncorrectable errors, indicating some permanent data loss.
+
+Write 1,000,000 bytes to random positions on two drives:
+
+```
+# for disk in /dev/sd{a,c}3; do ./random_write.py $disk 1000000; done
+
+# reboot
+```
+
+Boot and scrub:
+
+```
+# btrfs scrub start -B -d /
+
+# btrfs device stats -z /
+```
+
+### exp6: linux 5.8 + dm-crypt + btrfs: 1MB corruption on 2/4 raid1c3/raid1c3 disks
+
+btrfs handles heavy corruption within raid1c3 parameters without a
+sweat and a scrub corrects all errors. no permanent data loss occurs.
+
+Write 1,000,000 bytes to random positions on two drives:
+
+```
+# for disk in /dev/sd{a,c}3; do ./random_write.py $disk 1000000; done
+
+# reboot
+```
+
+Boot and scrub complete without incident:
+
+```
+# btrfs scrub start -B -d /
+
+# btrfs device stats -z /
+```
+
+### exp6: linux 5.8 + dm-crypt + btrfs: 1KB corruption on 4/4 raid1c3/raid1c3 disks
+
+btrfs survives random corruption even affecting all disks in a
+raid1c3 array. some files become unrecoverable, but the system
+often still boots and the array always reassembles and scrubs.
 
 Write 1,000 bytes to random positions on all four drives:
 
 ```
 # for disk in /dev/sd{a,b,c,d}3; do ./random_write.py $disk 1000; done
 
-# mdadm --action=check /dev/md0
+# reboot
+```
 
-# mdadm --wait /dev/md0
+depending on which files are corrupted (luck), you may be kicked
+to initramfs. array reassembly should still work.
+
+### exp7: linux 4.19 + dm-crypt + zfs: 1MB corruption on 2/4 raidz2 disks
+
+zfs handles heavy corruption within raidz2 parameters without a
+sweat and a scrub corrects all errors. no permanent data loss occurs.
+
+Write 1,000,000 bytes to random positions on two drives:
+
+```
+# for disk in /dev/sd{a,c}3; do ./random_write.py $disk 1000000; done
 
 # reboot
 ```
 
-In most cases, I've found the system is completely usable.
+Boot and scrub complete without incident:
 
-Within these constraints, dm-integrity + md has outperformed every other
-RAID configuration on this test, often carrying on with all-disk corruption
-levels climbing to 100KB and beyond. However, given the coincidence of power
-failure and data loss, this setup is still **strongly not recommended**.
+```
+# zpool scrub rpool
+
+# zpool clear rpool
+```
+
+one initially surprising outcome is that the scrub surfaces CKSUM errors on
+the drives which were untouched. this doesn't seem to have any
+real world impact, but was alarming when first noticed.
+
+according to PMT in `#zfsonlinux`:
+
+> checksummed blocks are striped across RAIDZ disks in a vdev, so
+> mangling a block is going to raise CKSUM errors from all the
+> disks the block is across
+
+### exp7: linux 4.19 + dm-crypt + zfs: 1KB corruption on 4/4 raidz2 disks
+
+zfs survives random corruption even affecting all disks in a
+raidz2 array. some files become unrecoverable, but the system
+often still boots and the array always reassembles and scrubs.
+
+Write 1,000 bytes to random positions on all four drives:
+
+```
+# for disk in /dev/sd{a,b,c,d}3; do ./random_write.py $disk 1000; done
+
+# reboot
+```
+
+depending on which files are corrupted (luck), you may be kicked
+to initramfs. zpool reassembly should still work.
 
 ## appendix
 
