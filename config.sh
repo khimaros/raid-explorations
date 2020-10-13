@@ -2,7 +2,7 @@
 DEBIAN_RELEASE="buster"
 
 # enable debian backports
-DEBIAN_BACKPORTS="yes"
+#DEBIAN_BACKPORTS="yes"
 
 # utility packages unrelated to raid
 EXTRA_PACKAGES=(vim git screen)

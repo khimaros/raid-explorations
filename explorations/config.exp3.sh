@@ -8,7 +8,7 @@ DEBIAN_RELEASE="buster"
 EXTRA_PACKAGES=(vim git screen)
 
 # device files to use in raid array
-DISKS_GLOB="sd{a,b,c,d}"
+DISKS_GLOB="sd{a,b}"
 
 # for nvme drives this is usually "p"
 DISKS_PART_PREFIX=""
