@@ -454,3 +454,17 @@ Write 1000 bytes to /dev/sdb3, avoiding first 1KiB
 ```
 # ./random_write.py /dev/sdb3 1000 1048576
 ```
+
+## rescue
+
+if you are having difficulty mounting the array, boot into the LiveCD, modify
+`config.sh` to match installation time, and run `./rescue.sh`.
+
+## replacing devices
+
+if you need to replace disks in the array, you can add them back to the array
+by adding **only** the spare drives to `RAID_DEVICES` and running:
+
+```
+./replace.sh
+```

@@ -16,4 +16,6 @@ fi
 
 ./${RAID_EXPLORATION}/finish.sh
 
+./cleanup.sh
+
 echo "Debian installation completed successfully! Reboot required."
