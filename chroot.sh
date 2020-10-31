@@ -9,6 +9,8 @@ export LANG=C.UTF-8
 
 passwd
 
+sed -i 's/ main/ main contrib/g' /etc/apt/sources.list
+
 [[ -z "${DEBIAN_BACKPORTS}" ]] || cat <<EOF > /etc/apt/sources.list.d/backports.list
 deb http://deb.debian.org/debian/ ${DEBIAN_RELEASE}-backports main contrib
 EOF

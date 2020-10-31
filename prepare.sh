@@ -5,6 +5,8 @@ set -ex
 . ./config.sh
 . ./${RAID_EXPLORATION}/common.sh
 
+sed -i 's/ main/ main contrib/g' /etc/apt/sources.list
+
 [[ -z "${DEBIAN_BACKPORTS}" ]] || cat <<EOF > /etc/apt/sources.list.d/backports.list
 deb http://deb.debian.org/debian/ ${DEBIAN_RELEASE}-backports main contrib
 EOF

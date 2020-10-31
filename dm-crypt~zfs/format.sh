@@ -10,7 +10,7 @@ for disk in "${DISKS[@]}"; do
 done
 
 for disk in "${DISKS[@]}"; do
-    cryptsetup luksOpen /dev/${disk}${DISKS_PART_PREFIX}3 ${disk}${DISK_PART_PREFIX}3_crypt
+    cryptsetup luksOpen /dev/${disk}${DISKS_PART_PREFIX}3 ${disk}${DISKS_PART_PREFIX}3_crypt
 done
 
 modprobe zfs
