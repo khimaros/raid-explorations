@@ -39,6 +39,6 @@ if [[ "$BOOT_MODE" = "efi" ]]; then
 
     for disk in "${DISKS_DEVICES[@]:1}"; do
         dd if=${DISKS_DEVICES[0]}${DISKS_PART_PREFIX}1 of=${disk}${DISKS_PART_PREFIX}1
-        chroot /mnt efibootmgr -c -g -d ${disk} -p 1 -L "debian-${disk##/dev/}" -1 '\EFI\debian\grubx64.efi'
+        chroot /mnt efibootmgr -c -g -d ${disk} -p 1 -L "debian-${disk##/dev/}" -l '\EFI\debian\grubx64.efi'
     done
 fi
