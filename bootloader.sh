@@ -22,3 +22,18 @@ fi
 chroot /mnt update-initramfs -c -k all
 
 chroot /mnt update-grub
+
+if [[ "$BOOT_MODE" = "efi" ]]; then
+    umount /mnt/boot/efi
+
+    #for disk in "${DISKS_DEVICES[@]:1}"; do
+    #    mount ${disk}${DISKS_PART_PREFIX}1 /mnt/boot/efi
+    #    chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot/efi --no-nvram --recheck --no-floppy
+    #    umount /mnt/boot/efi
+    #done
+
+    for disk in "${DISKS_DEVICES[@]:1}"; do
+        dd if=${DISKS_DEVICES[0]}${DISKS_PART_PREFIX}1 of=${disk}${DISKS_PART_PREFIX}1
+        chroot /mnt efibootmgr -c -g -d ${disk} -p 1 -L "debian-${disk##/dev/}" -1 '\EFI\debian\grubx64.efi'
+    done
+fi

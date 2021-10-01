@@ -15,13 +15,6 @@ mount ${DISKS_DEVICES}${DISKS_PART_PREFIX}2 /mnt/boot
 
 if [[ "$BOOT_MODE" = "efi" ]]; then
     mkdir -p /mnt/boot/efi
-
-    #for disk in "${DISKS_DEVICES[@]}"; do
-    #    mount ${disk}${DISKS_PART_PREFIX}1 /mnt/boot/efi
-    #    chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot/efi --no-nvram --recheck --no-floppy
-    #    umount /mnt/boot/efi
-    #done
-
     mount ${DISKS_DEVICES}${DISKS_PART_PREFIX}1 /mnt/boot/efi
 fi
 
