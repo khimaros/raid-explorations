@@ -37,7 +37,7 @@ Corruption is only detected on dm-integrity based systems by inspecting
 all data on `/dev/sd{a,b,c,d}`. It is only recommended to run these
 scripts in a VM or on a machine with no important data.
 
-1. Boot a "standard" Debian LiveCD. [buster](https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/), [testing](https://cdimage.debian.org/cdimage/weekly-live-builds/amd64/iso-hybrid/)
+1. Boot a "standard" Debian LiveCD. [stable](https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/), [testing](https://cdimage.debian.org/cdimage/weekly-live-builds/amd64/iso-hybrid/)
 
 1. Fetch this repository:
 
