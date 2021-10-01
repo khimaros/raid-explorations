@@ -23,4 +23,6 @@ btrfs balance start --full-balance /mnt
 
 btrfs scrub start -B /mnt
 
+mkdir /mnt/boot
+
 mount ${DISK_DEVICES[0]}${DISKS_PART_PREFIX}2 /mnt/boot

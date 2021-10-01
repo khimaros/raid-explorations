@@ -33,4 +33,6 @@ mkfs.ext4 -m 0 /dev/vg0/root
 
 mount /dev/vg0/root /mnt
 
+mkdir /mnt/boot
+
 mount /dev/${BOOT_MD} /mnt/boot

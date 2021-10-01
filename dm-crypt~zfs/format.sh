@@ -30,4 +30,6 @@ zfs create -o canmount=noauto -o mountpoint=/ rpool/ROOT/debian
 
 zfs mount rpool/ROOT/debian
 
+mkdir /mnt/boot
+
 mount ${DISK_DEVICES[0]}${DISKS_PART_PREFIX}2 /mnt/boot
