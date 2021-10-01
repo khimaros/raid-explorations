@@ -19,7 +19,8 @@ if [[ "$BOOT_MODE" = "efi" ]]; then
 
     for ((i=${#DISKS_DEVICES[@]}-1; i>=0; i--)); do
         disk="${DISKS_DEVICES[$i]}"
-        mount "${disk}${DISKS_PART_PREFIX}2" /mnt/boot/efi
+        mount "${disk}${DISKS_PART_PREFIX}2" /mnt/boot
+        mkdir -p /mnt/boot/efi
         mount "${disk}${DISKS_PART_PREFIX}1" /mnt/boot/efi
         chroot /mnt grub-install --target=x86_64-efi \
             --bootloader-id=debian \
