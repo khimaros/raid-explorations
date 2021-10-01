@@ -8,6 +8,6 @@ BOOT_DEVICES=($(eval echo "/dev/${DISKS_GLOB}${DISKS_PART_PREFIX}2"))
 
 ROOT_DEVICES=($(eval echo "/dev/mapper/${DISKS_GLOB}${DISKS_PART_PREFIX}3_int"))
 
-BOOT_MD=md0
+BOOT_MD=md1
 
-ROOT_MD=md1
+ROOT_MD=md2

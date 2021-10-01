@@ -14,14 +14,10 @@ EOF
 
 apt update && apt install -y "${EXTRA_PACKAGES[@]}"
 
-apt install -y gdisk dosfstools "${RAID_PACKAGES[@]}"
+apt install -y mdadm gdisk dosfstools "${RAID_PACKAGES[@]}"
 
-for dev in /dev/md/*; do
-    mdadm --stop $dev
-done
-
-wipefs -a "${DISKS_DEVICES[@]}"
-sleep 1
+#wipefs -a "${DISKS_DEVICES[@]}"
+#sleep 1
 
 for disk in "${DISKS_DEVICES[@]}"; do
     sgdisk --zap-all $disk
@@ -36,6 +32,12 @@ for disk in "${DISKS_DEVICES[@]}"; do
     #parted $disk mkpart primary ext4 513MiB 1024MiB
     #parted $disk mkpart primary 1024MiB 100%
 done
+
+if test -b /dev/md/*; then
+    for dev in /dev/md/*; do
+        mdadm --stop $dev
+    done
+fi
 
 EFI_DEVICES=($(eval echo "/dev/${DISKS_GLOB}${DISKS_PART_PREFIX}1"))
 
