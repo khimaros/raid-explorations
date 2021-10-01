@@ -280,6 +280,25 @@ to recover from the initramfs console:
 
 Press Ctrl+D to resume boot.
 
+### exp1: linux 5.7 + dm-integrity + md + dm-crypt + lvm + ext4: removal of 2/4 raid6 disks
+
+disk removal and spare rebuild is handled without issue.
+
+boot will be somewhat slower while drives are missing due
+to time spent waiting for cryptsetup timeout.
+
+after boot, everything works fine. the drives show as `removed`:
+
+```
+# mdadm --detail /dev/md0
+```
+
+drives can be re-added to the array:
+
+```
+# mdadm --manage /dev/md0 --re-add /dev/dm-2 /dev/dm-3
+```
+
 ### exp3: linux 4.19 + dm-crypt + btrfs: 1MB corruption on 1/2 raid1/raid1 disks
 
 btrfs handles heavy corruption within raid1 parameters without a
