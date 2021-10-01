@@ -34,7 +34,7 @@ for disk in "${DISKS_DEVICES[@]}"; do
 done
 
 if test -b /dev/md/*; then
-    for dev in /dev/md/*; do
+    for dev in /dev/md* /dev/md/*; do
         mdadm --stop $dev
     done
 fi
