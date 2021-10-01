@@ -19,6 +19,9 @@ if [[ "$BOOT_MODE" = "efi" ]]; then
 				--efi-directory=/boot/efi --no-nvram --recheck --no-floppy
 else
     chroot /mnt dpkg-reconfigure grub-pc
+    for disk in "${DISK_DEVICES[@]}"; do
+        chroot /mnt grub-install ${disk}
+    done
 fi
 
 chroot /mnt update-initramfs -c -k all
