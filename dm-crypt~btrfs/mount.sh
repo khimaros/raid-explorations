@@ -10,3 +10,5 @@ for disk in "${DISKS[@]}"; do
 done
 
 mount ${CRYPT_DEVICES} /mnt
+
+mount ${DISK_DEVICES[0]}${DISKS_PART_PREFIX}2 /mnt/boot

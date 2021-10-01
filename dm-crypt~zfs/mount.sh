@@ -13,3 +13,4 @@ modprobe zfs
 
 zfs mount rpool/ROOT/debian
 
+mount ${DISK_DEVICES[0]}${DISKS_PART_PREFIX}2 /mnt/boot

@@ -2,6 +2,6 @@
 
 set -ex
 
-mdadm --action=check /dev/md0
+mdadm --action=check /dev/${ROOT_MD}
 
-mdadm --wait /dev/md0
+mdadm --wait /dev/${ROOT_MD}

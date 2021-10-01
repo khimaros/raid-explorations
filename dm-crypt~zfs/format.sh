@@ -5,6 +5,8 @@ set -ex
 . "$(dirname "$0")/../config.sh"
 . "$(dirname "$0")/common.sh"
 
+mkfs.ext4 -F -m 0 ${DISK_DEVICES[0]}${DISKS_PART_PREFIX}2
+
 for disk in "${DISKS[@]}"; do
     cryptsetup -q luksFormat "${CRYPTSETUP_OPTS[@]}" /dev/${disk}${DISKS_PART_PREFIX}3
 done
@@ -27,3 +29,5 @@ zfs create -o canmount=off -o mountpoint=none rpool/ROOT
 zfs create -o canmount=noauto -o mountpoint=/ rpool/ROOT/debian
 
 zfs mount rpool/ROOT/debian
+
+mount ${DISK_DEVICES[0]}${DISKS_PART_PREFIX}2 /mnt/boot

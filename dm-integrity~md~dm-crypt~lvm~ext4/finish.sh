@@ -5,10 +5,12 @@ set -ex
 . "$(dirname "$0")/common.sh"
 
 
-uuid=$(blkid -s UUID -o value /dev/md0)
-echo "md0_crypt UUID=${uuid} none luks,discard" >> /mnt/etc/crypttab
+uuid=$(blkid -s UUID -o value /dev/${ROOT_MD})
+echo "${ROOT_MD}_crypt UUID=${uuid} none luks,discard" >> /mnt/etc/crypttab
 
 echo "/dev/vg0/root / ext4 rw,relatime,errors=remount-ro 0 0" >> /mnt/etc/fstab
+
+echo "/dev/${BOOT_MD} /boot ext4 rw,relatime,errors=remount-ro 0 0" >> /mnt/etc/fstab
 
 mkdir -p /mnt/etc/udev/rules.d/
 

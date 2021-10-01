@@ -5,6 +5,8 @@ set -ex
 . "$(dirname "$0")/../config.sh"
 . "$(dirname "$0")/common.sh"
 
+mkfs.ext4 -F -m 0 ${DISK_DEVICES[0]}${DISKS_PART_PREFIX}2
+
 for disk in "${DISKS[@]}"; do
     cryptsetup -q luksFormat "${CRYPTSETUP_OPTS[@]}" /dev/${disk}${DISKS_PART_PREFIX}3
 done
@@ -20,3 +22,5 @@ mount ${CRYPT_DEVICES} /mnt
 btrfs balance start --full-balance /mnt
 
 btrfs scrub start -B /mnt
+
+mount ${DISK_DEVICES[0]}${DISKS_PART_PREFIX}2 /mnt/boot

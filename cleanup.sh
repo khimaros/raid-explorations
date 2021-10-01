@@ -14,7 +14,6 @@ umount /mnt/dev || true
 
 umount /mnt/boot/efi || true
 umount /mnt/boot || true
-
-./${RAID_EXPLORATION}/umount.sh || true
-
 umount /mnt || true
+
+./${RAID_EXPLORATION}/close.sh || true
