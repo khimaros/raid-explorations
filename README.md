@@ -13,6 +13,11 @@ able to be assembled and scrubbed, and there were no kernel panics or
 other showstopping issues except where the operating system could no
 longer carry on due to missing critical files.
 
+Runner-ups include btrfs in raid1c3/raid1c3 configuration and stacked
+dm-integrity + md + dm-crypt + lvm + ext4 in a raid6 configuration on
+Linux >= 5.4-rc1. These are reliable options but the management and
+scrub interfaces are not as ergonomic as ZFS.
+
 Further, based on these observations, **I STRONGLY recommend against
 using dm-integrity in combination with md on Linux <5.4-rc1 for
 any important data**; as few as 100 bytes of corruption can render
@@ -30,6 +35,9 @@ ZFS and btrfs provide better tooling for detection of corrupted files, and
 scans take a small fraction of the time required for a full md scan.
 Corruption is only detected on dm-integrity based systems by inspecting
 `dmesg` output after a read attempt is made (eg. during a full scan).
+
+Upon disk failure, btrfs volumes must be manually mounted in degraded
+mode in order to boot the system.
 
 ## setup
 
