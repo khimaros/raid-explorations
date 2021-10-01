@@ -5,7 +5,7 @@ set -ex
 . "$(dirname "$0")/../config.sh"
 . "$(dirname "$0")/common.sh"
 
-mdadm --create --metadata=0.90 --level=1 --raid-devices=4 --bitmap=internal /dev/${BOOT_MD} "${BOOT_DEVICES[@]}"
+mdadm --create --level=1 --raid-devices=4 --bitmap=internal /dev/${BOOT_MD} "${BOOT_DEVICES[@]}"
 
 mkfs.ext4 -m 0 /dev/${BOOT_MD}
 
