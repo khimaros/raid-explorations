@@ -43,6 +43,8 @@ EFI_DEVICES=($(eval echo "/dev/${DISKS_GLOB}${DISKS_PART_PREFIX}1"))
 
 apt install -y "${RAID_PACKAGES[@]}" mdadm
 
+mdadm --zero-superblock "${EFI_DEVICES[@]}"
+
 mdadm --create /dev/md0 --metadata=1.0 --level=1 --raid-devices=4 --bitmap=internal "${EFI_DEVICES[@]}"
 
 mkfs.msdos -F 32 -s 1 -n EFI /dev/md0
