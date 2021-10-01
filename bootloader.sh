@@ -20,9 +20,10 @@ if [[ "$BOOT_MODE" = "efi" ]]; then
         disk="${DISKS_DEVICES[$i]}"
         mount "${disk}${DISKS_PART_PREFIX}1" /mnt/boot/efi
         chroot /mnt grub-install --target=x86_64-efi \
-            --bootloader-id=debian-${disk##/dev/} \
+            --bootloader-id=debian \
             --efi-directory=/boot/efi --no-nvram --recheck --no-floppy
-				chroot /mnt efibootmgr -c -g -d ${disk} -p 1 -L "debian-${disk##/dev/}" -l '\EFI\debian\grubx64.efi'
+				label="debian-${disk##/dev/}"
+				chroot /mnt efibootmgr -c -g -d ${disk} -p 1 -L "$label" -l '\EFI\debian\grubx64.efi'
 				umount /mnt/boot/efi
     done
 
