@@ -5,7 +5,7 @@ set -ex
 . "$(dirname "$0")/../config.sh"
 . "$(dirname "$0")/common.sh"
 
-mdadm --zero-superblock "${BOOT_DEVICES[@]}"
+mdadm --zero-superblock --metadata=1.0 "${BOOT_DEVICES[@]}" || true
 
 mdadm --create --metadata=1.0 --level=1 --raid-devices=4 --bitmap=internal /dev/${BOOT_MD} "${BOOT_DEVICES[@]}"
 
@@ -19,7 +19,7 @@ for disk in "${DISKS[@]}"; do
     integritysetup open --integrity sha256 /dev/${disk}${DISKS_PART_PREFIX}3 ${disk}${DISKS_PART_PREFIX}3_int
 done
 
-mdadm --zero-superblock "${ROOT_DEVICES[@]}"
+mdadm --zero-superblock "${ROOT_DEVICES[@]}" || true
 
 mdadm --create --level=${RAID_LEVEL} --raid-devices=4 --bitmap=internal /dev/${ROOT_MD} "${ROOT_DEVICES[@]}"
 

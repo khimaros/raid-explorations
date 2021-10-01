@@ -16,8 +16,15 @@ apt update && apt install -y "${EXTRA_PACKAGES[@]}"
 
 apt install -y mdadm gdisk dosfstools "${RAID_PACKAGES[@]}"
 
-#wipefs -a "${DISKS_DEVICES[@]}"
-#sleep 1
+echo "AUTO -all" >> /etc/mdadm/mdadm.conf
+
+grep "^md" /proc/mdstat | awk '{ print $1 }' | while read md; do
+    mdadm --stop /dev/$md
+done
+
+wipefs -a "${DISKS_DEVICES[@]}"
+
+sync "${DISKS_DEVICES[@]}"
 
 for disk in "${DISKS_DEVICES[@]}"; do
     sgdisk --zap-all $disk
@@ -33,18 +40,12 @@ for disk in "${DISKS_DEVICES[@]}"; do
     #parted $disk mkpart primary 1024MiB 100%
 done
 
-if test -b /dev/md/*; then
-    for dev in /dev/md* /dev/md/*; do
-        mdadm --stop $dev
-    done
-fi
-
 EFI_DEVICES=($(eval echo "/dev/${DISKS_GLOB}${DISKS_PART_PREFIX}1"))
 
 apt install -y "${RAID_PACKAGES[@]}" mdadm
 
-mdadm --zero-superblock "${EFI_DEVICES[@]}"
+mdadm --zero-superblock --metadata=1.0 "${EFI_DEVICES[@]}" || true
 
-mdadm --create /dev/md0 --metadata=1.0 --level=1 --raid-devices=4 --bitmap=internal "${EFI_DEVICES[@]}"
+mdadm --create --metadata=1.0 /dev/md0 --level=1 --raid-devices=4 --bitmap=internal "${EFI_DEVICES[@]}"
 
 mkfs.msdos -F 32 -s 1 -n EFI /dev/md0
