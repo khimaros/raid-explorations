@@ -6,7 +6,6 @@ set -ex
 . "$(dirname "$0")/common.sh"
 
 for disk in "${DISKS[@]}"; do
-    integritysetup open --integrity sha256 /dev/${disk}${DISKS_PART_PREFIX}2 ${disk}${DISKS_PART_PREFIX}2_int
     integritysetup open --integrity sha256 /dev/${disk}${DISKS_PART_PREFIX}3 ${disk}${DISKS_PART_PREFIX}3_int
 done
 
