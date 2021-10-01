@@ -16,7 +16,7 @@ fi
 if [[ "$BOOT_MODE" = "efi" ]]; then
     chroot /mnt grub-install --target=x86_64-efi \
         --bootloader-id=debian-${DISKS_DEVICES[0]##/dev/} \
-				--efi-directory=/boot/efi --no-nvram --recheck --no-floppy
+        --efi-directory=/boot/efi --no-nvram --recheck --no-floppy
 else
     chroot /mnt dpkg-reconfigure grub-pc
     for disk in "${DISK_DEVICES[@]}"; do
