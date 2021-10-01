@@ -1,5 +1,5 @@
 # debian release to bootstrap
-DEBIAN_RELEASE="buster"
+DEBIAN_RELEASE="bullseye"
 
 # enable debian backports
 #DEBIAN_BACKPORTS="yes"
@@ -17,7 +17,7 @@ DISKS_PART_PREFIX=""
 CRYPTSETUP_OPTS=(-c aes-xts-plain64 -s 512 -h sha256)
 
 # enable uefi boot
-#BOOT_MODE="efi"
+BOOT_MODE="efi"
 
 # raid stack and filesystem combination
 RAID_EXPLORATION="dm-integrity~md~dm-crypt~lvm~ext4"
