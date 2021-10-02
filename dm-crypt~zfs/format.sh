@@ -7,16 +7,6 @@ set -ex
 
 mkfs.ext4 -F -m 0 ${DISK_DEVICES[0]}${DISKS_PART_PREFIX}2
 
-for disk in "${DISKS[@]}"; do
-    cryptsetup -q luksFormat "${CRYPTSETUP_OPTS[@]}" /dev/${disk}${DISKS_PART_PREFIX}3
-done
-
-for disk in "${DISKS[@]}"; do
-    cryptsetup luksOpen /dev/${disk}${DISKS_PART_PREFIX}3 ${disk}${DISKS_PART_PREFIX}3_crypt
-done
-
-modprobe zfs
-
 zpool create \
     -o ashift=12 \
     -O acltype=posixacl -O canmount=off -O compression=lz4 \
