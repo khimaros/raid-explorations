@@ -24,7 +24,7 @@ zpool create -f \
     -O acltype=posixacl -O canmount=off -O compression=lz4 \
     -O dnodesize=auto -O normalization=formD -O relatime=on \
     -O xattr=sa -O mountpoint=/boot -R /mnt \
-    rpool mirror "${BOOT_DEVICES[@]}"
+    bpool mirror "${BOOT_DEVICES[@]}"
 
 zfs create -o canmount=off -o mountpoint=none bpool/BOOT
 zfs create -o canmount=noauto -o mountpoint=/boot bpool/BOOT/debian
