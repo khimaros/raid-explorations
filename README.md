@@ -116,10 +116,10 @@ Boot time assembly will fail and after some timeout you will
 reach initramfs. The automated assembly is not usable, so reassemble:
 
 ```
-(initramfs) mdadm --stop /dev/md0
-mdadm: stopped /dev/md0
-(initramfs) mdadm --assemble /dev/md0
-mdadm: /dev/md0 has been started with 3 drives (out of 4).
+(initramfs) mdadm --stop /dev/md2
+mdadm: stopped /dev/md2
+(initramfs) mdadm --assemble /dev/md2
+mdadm: /dev/md2 has been started with 3 drives (out of 4).
 ```
 
 At this point, you can resume boot by pressing Ctrl+D.
@@ -127,7 +127,7 @@ At this point, you can resume boot by pressing Ctrl+D.
 Now try to add the drive back to the array:
 
 ```
-# mdadm --manage /dev/md0 --add /dev/mapper/sda3_int
+# mdadm --manage /dev/md2 --add /dev/mapper/sda3_int
 [ ... ] Buffer I/O error on dev dm-3, logical block 2324464, async page read
 [ ... ] Buffer I/O error on dev dm-3, logical block 2324493, async page read
 [ ... ] Buffer I/O error on dev dm-3, logical block 2324494, async page read
@@ -150,7 +150,7 @@ does not convince md to accept the device back into the pool:
 [ ... ] Buffer I/O error on dev dm-3, logical block 2324464, async page read
 # integritysetup close sda3_int
 # integritysetup open --integrity sha256 -D -R /dev/sda3 sda3_int
-# mdadm --manage /dev/md0 --add /dev/mapper/sda3_int
+# mdadm --manage /dev/md2 --add /dev/mapper/sda3_int
 [ ... ] Buffer I/O error on dev dm-3, logical block 1, async page write
 ```
 
@@ -170,7 +170,7 @@ device and add it back to the array:
 Formatted with tag size 4, internal integrity sha256.
 Wiping device to initialize integrity checksum.
 # integritysetup open --integrity sha256 /dev/sda3 sda3_int
-# mdadm --manage /dev/md0 --add /dev/mapper/sda3_int
+# mdadm --manage /dev/md2 --add /dev/mapper/sda3_int
 mdadm: added /dev/mapper/sda3_int
 ```
 
@@ -197,9 +197,9 @@ Write 1,000 bytes to random positions on all four drives:
 ```
 # for disk in /dev/sd{a,b,c,d}3; do ./random_write.py $disk 1000; done
 
-# mdadm --action=check /dev/md0
+# mdadm --action=check /dev/md2
 
-# mdadm --wait /dev/md0
+# mdadm --wait /dev/md2
 
 # reboot
 ```
@@ -227,9 +227,9 @@ Write 1,000,000 bytes to random positions on two drives:
 Boot and scrub complete without incident:
 
 ```
-# mdadm --action=check /dev/md0
+# mdadm --action=check /dev/md2
 
-# mdadm --wait /dev/md0
+# mdadm --wait /dev/md2
 ```
 
 ### exp1: linux 5.7 + dm-integrity + md + dm-crypt + lvm + ext4: 1KB corruption on 4/4 raid6 disks
@@ -261,7 +261,7 @@ use the rescue script:
 
 # umount /mnt
 
-# mdadm --action=repair /dev/md0
+# mdadm --action=repair /dev/md2
 
 # fsck.ext4 -y -f -c /dev/vg0/root
 
@@ -271,7 +271,7 @@ use the rescue script:
 to recover from the initramfs console:
 
 ```
-(initramfs) cryptsetup luksOpen /dev/md0 md0_crypt
+(initramfs) cryptsetup luksOpen /dev/md2 md2_crypt
 
 (initramfs) vgchange -a y vg0
 
@@ -290,14 +290,16 @@ to time spent waiting for cryptsetup timeout.
 after boot, everything works fine. the drives show as `removed`:
 
 ```
-# mdadm --detail /dev/md0
+# mdadm --detail /dev/md2
 ```
 
 drives can be re-added to the array:
 
 ```
-# mdadm --manage /dev/md0 --re-add /dev/dm-2 /dev/dm-3
+# mdadm --manage /dev/md2 --re-add /dev/dm-2 /dev/dm-3
 ```
+
+you may need to run the efibootmgr to add the drives back to boot order.
 
 ### exp3: linux 4.19 + dm-crypt + btrfs: 1MB corruption on 1/2 raid1/raid1 disks
 

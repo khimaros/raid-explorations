@@ -18,12 +18,12 @@ end_pad = 128 * 1024 * 1024
 if len(sys.argv) > 4:
     end_pad = int(sys.argv[4])
 
-print('[*] write %d random bytes to %s (start_pad %d bytes, end_pad %d bytes)' % (count, of, start_pad, end_pad))
-
 # determine the size of the drive in bytes
 fd = os.open(of, os.O_RDONLY)
 end = os.lseek(fd, 0, os.SEEK_END)
 os.close(fd)
+
+print('[*] write %d random bytes to %s (total %d) (start_pad %d bytes, end_pad %d bytes)' % (count, of, end, start_pad, end_pad))
 
 changes = 0
 while changes < count:
