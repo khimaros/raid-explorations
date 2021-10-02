@@ -22,6 +22,10 @@ fi
 
 for ((i=${#DISKS_DEVICES[@]}-1; i>=0; i--)); do
     disk="${DISKS_DEVICES[$i]}"
-    label="debian-${disk##/dev/}"
-    efibootmgr -c -g -d ${disk} -p 1 -L "$label" -l '\EFI\debian\grubx64.efi'
+    if [[ "$BOOT_MODE" = "efi" ]]; then
+        label="debian-${disk##/dev/}"
+        efibootmgr -c -g -d ${disk} -p 1 -L "$label" -l '\EFI\debian\grubx64.efi'
+    else
+        grub-install ${disk}
+    fi
 done
