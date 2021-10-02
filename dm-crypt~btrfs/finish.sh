@@ -5,9 +5,6 @@ set -ex
 . "$(dirname "$0")/../config.sh"
 . "$(dirname "$0")/common.sh"
 
-uuid=$(blkid -s PARTUUID -o value ${DISKS_DEVICES}${DISKS_PART_PREFIX}2)
-echo "PARTUUID=${uuid} /boot ext4 rw,relatime 0 0" > /mnt/etc/fstab
-
 chroot /mnt apt install -y keyutils
 
 for disk in "${DISKS[@]}"; do

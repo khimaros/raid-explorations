@@ -19,4 +19,4 @@ mkfs.btrfs -f --csum sha256 -m raid1c3 -d raid1c3 "${BOOT_DEVICES[@]}"
 
 mkdir /mnt/boot
 
-mount ${DISKS_DEVICES[0]}${DISKS_PART_PREFIX}2 /mnt/boot
+mount ${BOOT_DEVICES} /mnt/boot
