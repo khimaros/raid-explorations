@@ -23,8 +23,6 @@ if [[ "$BOOT_MODE" = "efi" ]]; then
         chroot /mnt efibootmgr -c -g -d ${disk} -p 1 -L "$label" -l '\EFI\debian\grubx64.efi'
     done
     echo "/dev/md0 /boot/efi vfat rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,utf8,errors=remount-ro 0 0" >> /mnt/etc/fstab
-fi
-
 else
     chroot /mnt dpkg-reconfigure grub-pc
     for disk in "${DISK_DEVICES[@]}"; do
