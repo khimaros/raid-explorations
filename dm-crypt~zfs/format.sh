@@ -5,8 +5,6 @@ set -ex
 . "$(dirname "$0")/../config.sh"
 . "$(dirname "$0")/common.sh"
 
-mkfs.ext4 -F -m 0 ${DISK_DEVICES[0]}${DISKS_PART_PREFIX}2
-
 zpool create \
     -o ashift=12 \
     -O acltype=posixacl -O canmount=off -O compression=lz4 \
@@ -20,6 +18,8 @@ zfs create -o canmount=noauto -o mountpoint=/ rpool/ROOT/debian
 
 zfs mount rpool/ROOT/debian
 
+mkfs.ext4 -F -m 0 ${DISKS_DEVICES[0]}${DISKS_PART_PREFIX}2
+
 mkdir /mnt/boot
 
-mount ${DISK_DEVICES[0]}${DISKS_PART_PREFIX}2 /mnt/boot
+mount ${DISKS_DEVICES[0]}${DISKS_PART_PREFIX}2 /mnt/boot
