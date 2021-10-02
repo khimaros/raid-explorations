@@ -25,5 +25,6 @@ chroot /mnt /chroot.sh
 
 ./bootloader.sh
 
-uuid=$(blkid -s PARTUUID -o value ${DISKS_DEVICES}${DISKS_PART_PREFIX}1)
-echo "PARTUUID=${uuid} /boot/efi vfat rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,utf8,errors=remount-ro 0 0" >> /mnt/etc/fstab
+if [[ "$BOOT_MODE" = "efi" ]]; then
+    echo "/dev/md0 /boot/efi vfat rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,utf8,errors=remount-ro 0 0" >> /mnt/etc/fstab
+fi

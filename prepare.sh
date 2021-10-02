@@ -40,12 +40,14 @@ for disk in "${DISKS_DEVICES[@]}"; do
     #parted $disk mkpart primary 1024MiB 100%
 done
 
-EFI_DEVICES=($(eval echo "/dev/${DISKS_GLOB}${DISKS_PART_PREFIX}1"))
-
 apt install -y "${RAID_PACKAGES[@]}" mdadm
 
-mdadm --zero-superblock --metadata=1.0 "${EFI_DEVICES[@]}" || true
+if [[ "$BOOT_MODE" = "efi" ]]; then
+    EFI_DEVICES=($(eval echo "/dev/${DISKS_GLOB}${DISKS_PART_PREFIX}1"))
 
-mdadm --create --metadata=1.0 /dev/md0 --level=1 --raid-devices=4 --bitmap=internal "${EFI_DEVICES[@]}"
+    mdadm --zero-superblock --metadata=1.0 "${EFI_DEVICES[@]}" || true
 
-mkfs.msdos -F 32 -s 1 -n EFI /dev/md0
+    mdadm --create --metadata=1.0 /dev/md0 --level=1 --raid-devices=4 --bitmap=internal "${EFI_DEVICES[@]}"
+
+    mkfs.msdos -F 32 -s 1 -n EFI /dev/md0
+fi
