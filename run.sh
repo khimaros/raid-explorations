@@ -10,6 +10,10 @@ fi
 
 ./prepare.sh
 
+if [[ -f "./${RAID_EXPLORATION}/map.sh" ]]; then
+    ./${RAID_EXPLORATION}/map.sh
+fi
+
 ./${RAID_EXPLORATION}/format.sh
 
 ./install.sh

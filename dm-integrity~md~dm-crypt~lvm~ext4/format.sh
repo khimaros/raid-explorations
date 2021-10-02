@@ -11,14 +11,6 @@ mdadm --create --metadata=1.0 --level=1 --raid-devices=4 --bitmap=internal /dev/
 
 mkfs.ext4 -m 0 /dev/${BOOT_MD}
 
-for disk in "${DISKS[@]}"; do
-    integritysetup format --batch-mode --integrity sha256 /dev/${disk}${DISKS_PART_PREFIX}3
-done
-
-for disk in "${DISKS[@]}"; do
-    integritysetup open --integrity sha256 /dev/${disk}${DISKS_PART_PREFIX}3 ${disk}${DISKS_PART_PREFIX}3_int
-done
-
 mdadm --zero-superblock "${ROOT_DEVICES[@]}" || true
 
 mdadm --create --level=${RAID_LEVEL} --raid-devices=4 --bitmap=internal /dev/${ROOT_MD} "${ROOT_DEVICES[@]}"
