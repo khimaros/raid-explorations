@@ -71,6 +71,8 @@ $ sudo -i
 
 ## overview
 
+### resilience
+
  id                                  | kernel | stack            | level           | 1MB @ 2/4 | 1KB @ 4/4 | 1MB @ 1/2
  ----------------------------------- | ------ | ---------------- | --------------- | --------- | --------- | ---------
  [exp0](explorations/config.exp0.sh) | 4.19   | md\*             | 6               | FAIL\*\*  | N/A       | N/A
@@ -86,6 +88,20 @@ $ sudo -i
 \* dm-integrity + md + dm-crypt + lvm + ext4
 
 \*\* fails with as few as 100 bytes of corruption
+
+### performance
+
+ id                                  | kernel | stack            | level           | rndwr | seqwr
+ ----------------------------------- | ------ | ---------------- | --------------- | ----- | -----
+ [exp0](explorations/config.exp0.sh) | 4.19   | md\*             | 6               |       |
+ [exp1](explorations/config.exp1.sh) | 5.7    | md\*             | 6               |       |
+ [exp2](explorations/config.exp2.sh) | 5.8    | md\*             | 6               |       |
+ [exp3](explorations/config.exp3.sh) | 4.19   | dm-crypt + btrfs | raid1/raid1     |       |
+ [exp4](explorations/config.exp4.sh) | 5.8    | dm-crypt + btrfs | raid6/raid6     |       |
+ [exp5](explorations/config.exp5.sh) | 5.8    | dm-crypt + btrfs | raid6/raid1c3   |       |
+ [exp6](explorations/config.exp6.sh) | 5.8    | dm-crypt + btrfs | raid1c3/raid1c3 |       |
+ [exp7](explorations/config.exp7.sh) | 4.19   | dm-crypt + zfs   | raidz2          |       |
+ [exp8](explorations/config.exp8.sh) | 5.8    | dm-crypt + zfs   | raidz2          |       |
 
 ## details
 
@@ -284,11 +300,11 @@ Press Ctrl+D to resume boot.
 
 disk removal and spare rebuild is handled without issue.
 
-boot will be somewhat slower while drives are missing due
-to time spent waiting for cryptsetup timeout.
+initial boot will be somewhat slower while drives are missing due
+to read timeouts.
 
-if the boot or efi partitions are corrupted, you will be dropped to recovery
-shell. you will need to take manual steps to correct:
+if the boot or efi partitions are corrupted, you will be dropped to
+the recovery shell. you will need to take manual steps to correct:
 
 ```
 # mdadm --run /dev/md0
