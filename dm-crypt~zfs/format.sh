@@ -35,7 +35,7 @@ zpool create -f \
     -o feature@spacemap_histogram=enabled \
     -o feature@zpool_checkpoint=enabled \
     -O acltype=posixacl -O canmount=off -O compression=lz4 \
-    -O dnodesize=auto -O normalization=formD -O relatime=on \
+    -O normalization=formD -O relatime=on \
     -O xattr=sa -O mountpoint=/boot -R /mnt \
     bpool mirror "${BOOT_DEVICES[@]}"
 
