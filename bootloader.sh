@@ -14,21 +14,14 @@ else
 fi
 
 if [[ "$BOOT_MODE" = "efi" ]]; then
-    umount /mnt/boot/efi
-
+    chroot /mnt grub-install --target=x86_64-efi \
+        --bootloader-id=debian \
+        --efi-directory=/boot/efi --no-nvram --recheck --no-floppy
     for ((i=${#DISKS_DEVICES[@]}-1; i>=0; i--)); do
         disk="${DISKS_DEVICES[$i]}"
-        mkdir -p /mnt/boot/efi
-        mount "${disk}${DISKS_PART_PREFIX}1" /mnt/boot/efi
-        chroot /mnt grub-install --target=x86_64-efi \
-            --bootloader-id=debian \
-            --efi-directory=/boot/efi --no-nvram --recheck --no-floppy
         label="debian-${disk##/dev/}"
         chroot /mnt efibootmgr -c -g -d ${disk} -p 1 -L "$label" -l '\EFI\debian\grubx64.efi'
-        umount /mnt/boot/efi
     done
-
-    mount "${DISKS_DEVICES[0]}${DISKS_PART_PREFIX}1" /mnt/boot/efi
 else
     chroot /mnt dpkg-reconfigure grub-pc
     for disk in "${DISK_DEVICES[@]}"; do

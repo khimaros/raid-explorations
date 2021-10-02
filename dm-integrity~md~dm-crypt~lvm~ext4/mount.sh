@@ -19,6 +19,6 @@ while [[ ! -b /dev/vg0/root ]]; do sleep 1; done
 
 mount /dev/vg0/root /mnt
 
-mkdir /mnt/boot
+mkdir -p /mnt/boot
 
 mount /dev/${BOOT_MD} /mnt/boot

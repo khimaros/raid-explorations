@@ -15,6 +15,6 @@ mount --rbind /run /mnt/run
 
 if [[ "$BOOT_MODE" = "efi" ]]; then
     mkdir -p /mnt/boot/efi
-    mount ${DISKS_DEVICES}${DISKS_PART_PREFIX}1 /mnt/boot/efi
+    mount /dev/md0 /mnt/boot/efi
 fi
 
