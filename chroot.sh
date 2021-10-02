@@ -21,7 +21,7 @@ fi
 
 apt update
 
-apt install -y "mdadm ${RAID_PACKAGES[@]}"
+apt install -y mdadm "${RAID_PACKAGES[@]}"
 
 apt install -y "${EXTRA_PACKAGES[@]}"
 
