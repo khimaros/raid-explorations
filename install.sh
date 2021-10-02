@@ -24,7 +24,3 @@ chmod +x /mnt/chroot.sh
 chroot /mnt /chroot.sh
 
 ./bootloader.sh
-
-if [[ "$BOOT_MODE" = "efi" ]]; then
-    echo "/dev/md0 /boot/efi vfat rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,utf8,errors=remount-ro 0 0" >> /mnt/etc/fstab
-fi
