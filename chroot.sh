@@ -19,13 +19,15 @@ if [[ -f /apt.sh ]]; then
     /apt.sh
 fi
 
+export DEBIAN_FRONTEND=noninteractive
+
 apt update
 
 apt install -y mdadm "${RAID_PACKAGES[@]}"
 
 apt install -y "${EXTRA_PACKAGES[@]}"
 
-DEBIAN_FRONTEND=noninteractive apt install -y locales
+apt install -y locales
 
 #apt install -y console-setup
 
