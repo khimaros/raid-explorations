@@ -10,6 +10,7 @@ for disk in "${DISKS[@]}"; do
 done
 
 while [[ ! -b /dev/${ROOT_MD} ]]; do sleep 1; done
+#mdadm --run /dev/${ROOT_MD}
 
 cryptsetup luksOpen /dev/${ROOT_MD} ${ROOT_MD}_crypt
 

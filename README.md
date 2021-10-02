@@ -287,6 +287,19 @@ disk removal and spare rebuild is handled without issue.
 boot will be somewhat slower while drives are missing due
 to time spent waiting for cryptsetup timeout.
 
+if the boot or efi partitions are corrupted, you will be dropped to recovery
+shell. you will need to take manual steps to correct:
+
+```
+# mdadm --run /dev/md0
+# mdadm --run /dev/md1
+# mount /dev/md1 /boot
+# mount /dev/md0 /boot/efi
+```
+
+ensure that `/proc/mdstat` does not show `auto-read-only` for
+any of the arrays and then reboot.
+
 after boot, everything works fine. the drives show as `removed`:
 
 ```
@@ -296,10 +309,17 @@ after boot, everything works fine. the drives show as `removed`:
 drives can be re-added to the array:
 
 ```
+# sgdisk -R /dev/sdc /dev/sda
+# sgdisk -R /dev/sdd /dev/sda
+# sgdisk -G /dev/sdc
+# sgdisk -G /dev/sdd
+# efibootmgr / grub-install
+# integritysetup ...
+# integritysetup open ...
 # mdadm --manage /dev/md2 --re-add /dev/dm-2 /dev/dm-3
 ```
 
-you may need to run the efibootmgr to add the drives back to boot order.
+the steps above are automated with `replace.sh`.
 
 ### exp3: linux 4.19 + dm-crypt + btrfs: 1MB corruption on 1/2 raid1/raid1 disks
 
