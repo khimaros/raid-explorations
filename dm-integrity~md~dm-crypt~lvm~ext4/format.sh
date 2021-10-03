@@ -19,7 +19,7 @@ mdadm --create --level=${RAID_LEVEL} --raid-devices=4 --bitmap=internal /dev/${R
 
 wipefs -a /dev/${ROOT_MD}
 
-cryptsetup -q luksFormat "${CRYPTSETUP_OPTS[@]}" /dev/${ROOT_MD}
+cryptsetup -q luksFormat --sector-size=4096 "${CRYPTSETUP_OPTS[@]}" /dev/${ROOT_MD}
 
 cryptsetup luksOpen /dev/${ROOT_MD} ${ROOT_MD}_crypt
 

@@ -6,7 +6,7 @@ set -ex
 . "$(dirname "$0")/common.sh"
 
 for disk in "${DISKS[@]}"; do
-    integritysetup format --batch-mode "${INTEGRITYSETUP_OPTS[@]}" /dev/${disk}${DISKS_PART_PREFIX}3
+    integritysetup format --batch-mode --sector-size=4096 "${INTEGRITYSETUP_OPTS[@]}" /dev/${disk}${DISKS_PART_PREFIX}3
 done
 
 for disk in "${DISKS[@]}"; do
