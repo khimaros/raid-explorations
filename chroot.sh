@@ -7,8 +7,6 @@ set -ex
 
 export LANG=C.UTF-8
 
-passwd
-
 sed -i 's/ main/ main contrib/g' /etc/apt/sources.list
 
 [[ -z "${DEBIAN_BACKPORTS}" ]] || cat <<EOF > /etc/apt/sources.list.d/backports.list
@@ -44,3 +42,5 @@ echo -e "\nauto $ETHDEV\niface $ETHDEV inet dhcp\n" >> /etc/network/interfaces.d
 apt full-upgrade -y --autoremove --purge
 
 tasksel --debconf-apt-progress="--logstderr" install standard
+
+passwd
