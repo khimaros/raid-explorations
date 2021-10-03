@@ -15,7 +15,7 @@ echo "/dev/${BOOT_MD} /boot ext4 rw,relatime,errors=remount-ro 0 0" >> /mnt/etc/
 mkdir -p /mnt/etc/udev/rules.d/
 
 cat <<EOF > /mnt/etc/udev/rules.d/99-integrity.rules
-ACTION=="add", SUBSYSTEM=="block", ENV{DEVTYPE}=="partition", ENV{ID_FS_TYPE}=="DM_integrity", RUN+="/sbin/integritysetup open --integrity sha256 \$env{DEVNAME} %k_int"
+ACTION=="add", SUBSYSTEM=="block", ENV{DEVTYPE}=="partition", ENV{ID_FS_TYPE}=="DM_integrity", RUN+="/sbin/integritysetup open ${INTEGRITYSETUP_OPTS[@]} \$env{DEVNAME} %k_int"
 ACTION=="remove", SUBSYSTEM=="block", ENV{DEVTYPE}=="partition", ENV{ID_FS_TYPE}=="DM_integrity", RUN+="/sbin/integritysetup close %k_int"
 EOF
 

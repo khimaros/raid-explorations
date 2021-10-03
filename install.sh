@@ -24,3 +24,5 @@ chmod +x /mnt/chroot.sh
 chroot /mnt /chroot.sh
 
 ./bootloader.sh
+
+cp -a "$(realpath .)" /mnt/root/
