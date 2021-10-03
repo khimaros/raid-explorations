@@ -9,6 +9,11 @@ set -ex
 
 ./partition.sh
 
+for disk in "${DISK_DEVICES[@]}"; do
+    mdadm --fail /dev/md0 $disk || true
+    mdadm --remove /dev/md0 $disk || true
+done
+
 if [[ "$BOOT_MODE" = "efi" ]]; then
     EFI_DEVICES=($(eval echo "/dev/${DISKS_GLOB}${DISKS_PART_PREFIX}1"))
 		for dev in "${EFI_DEVICES[@]}"; do
