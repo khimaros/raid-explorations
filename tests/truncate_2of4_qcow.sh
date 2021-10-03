@@ -6,4 +6,4 @@ set -x
 
 echo > ~/.local/share/libvirt/images/debian-sda.qcow2
 
-echo > ~/.local/share/libvirt/images/debian-sdb.qcow2
+echo > ~/.local/share/libvirt/images/debian-sdc.qcow2
