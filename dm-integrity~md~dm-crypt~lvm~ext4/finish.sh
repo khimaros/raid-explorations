@@ -2,8 +2,8 @@
 
 set -ex
 
+. "$(dirname "$0")/../config.sh"
 . "$(dirname "$0")/common.sh"
-
 
 uuid=$(blkid -s UUID -o value /dev/${ROOT_MD})
 echo "${ROOT_MD}_crypt UUID=${uuid} none luks,discard" >> /mnt/etc/crypttab
