@@ -14,7 +14,10 @@ DISKS_GLOB="sd{a,b,c,d}"
 DISKS_PART_PREFIX=""
 
 # extra args to pass to luksFormat
-CRYPTSETUP_OPTS=(-c aes-xts-plain64 -s 512 -h sha256)
+CRYPTSETUP_OPTS=(--cipher=aes-xts-plain64 --key-size=512 --hash=sha256 --sector-size=4096)
+
+# extra args to pass to integritysetup
+INTEGRITYSETUP_OPTS=(--integrity=sha1 --sector-size=4096)
 
 # enable uefi boot
 BOOT_MODE="efi"

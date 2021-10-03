@@ -32,5 +32,7 @@ if [[ "$BOOT_MODE" = "efi" ]]; then
 
     mdadm --create --metadata=1.0 /dev/md0 --level=1 --raid-devices=4 --bitmap=internal "${EFI_DEVICES[@]}"
 
+    wipefs -a /dev/md0
+
     mkfs.msdos -F 32 -s 1 -n EFI /dev/md0
 fi

@@ -43,5 +43,4 @@ echo -e "\nauto $ETHDEV\niface $ETHDEV inet dhcp\n" >> /etc/network/interfaces.d
 
 apt full-upgrade -y --autoremove --purge
 
-tasksel install standard
-
+tasksel --debconf-apt-progress="--logtostderr" install standard
