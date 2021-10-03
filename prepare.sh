@@ -13,7 +13,7 @@ EOF
 
 apt update && apt install -y "${EXTRA_PACKAGES[@]}"
 
-apt install -y mdadm "${RAID_PACKAGES[@]}"
+apt install -y mdadm
 
 echo "AUTO -all" >> /etc/mdadm/mdadm.conf
 
@@ -22,8 +22,6 @@ grep "^md" /proc/mdstat | awk '{ print $1 }' | while read md; do
 done
 
 ./partition.sh
-
-apt install -y "${RAID_PACKAGES[@]}"
 
 if [[ "$BOOT_MODE" = "efi" ]]; then
     EFI_DEVICES=($(eval echo "/dev/${DISKS_GLOB}${DISKS_PART_PREFIX}1"))
@@ -36,3 +34,5 @@ if [[ "$BOOT_MODE" = "efi" ]]; then
 
     mkfs.msdos -F 32 -s 1 -n EFI /dev/md0
 fi
+
+apt install -y "${RAID_PACKAGES[@]}"

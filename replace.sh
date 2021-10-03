@@ -7,12 +7,12 @@ set -ex
 
 # IMPORTANT: Update DISKS_GLOB in config.sh before running.
 
-./partition.sh
-
 for disk in "${DISK_DEVICES[@]}"; do
     mdadm --fail /dev/md0 $disk || true
     mdadm --remove /dev/md0 $disk || true
 done
+
+./partition.sh
 
 if [[ "$BOOT_MODE" = "efi" ]]; then
     EFI_DEVICES=($(eval echo "/dev/${DISKS_GLOB}${DISKS_PART_PREFIX}1"))
