@@ -91,19 +91,38 @@ $ sudo -i
 
 ### performance
 
- id                                  | kernel | stack            | level           | rndwr | seqwr
- ----------------------------------- | ------ | ---------------- | --------------- | ----- | -----
- [exp0](explorations/config.exp0.sh) | 4.19   | md\*             | 6               |       |
- [exp1](explorations/config.exp1.sh) | 5.7    | md\*             | 6               |       |
- [exp2](explorations/config.exp2.sh) | 5.8    | md\*             | 6               |       |
- [exp3](explorations/config.exp3.sh) | 4.19   | dm-crypt + btrfs | raid1/raid1     |       |
- [exp4](explorations/config.exp4.sh) | 5.8    | dm-crypt + btrfs | raid6/raid6     |       |
- [exp5](explorations/config.exp5.sh) | 5.8    | dm-crypt + btrfs | raid6/raid1c3   |       |
- [exp6](explorations/config.exp6.sh) | 5.8    | dm-crypt + btrfs | raid1c3/raid1c3 |       |
- [exp7](explorations/config.exp7.sh) | 4.19   | dm-crypt + zfs   | raidz2          |       |
- [exp8](explorations/config.exp8.sh) | 5.8    | dm-crypt + zfs   | raidz2          |       |
+lower is better. see `tests/benchmark.sh`.
+
+ id                                  | kernel | stack            | level           | rndwr  | seqwr
+ ----------------------------------- | ------ | ---------------- | --------------- | ------ | -----
+ [exp0](explorations/config.exp0.sh) | 4.19   | md\*             | 6               |        |
+ [exp1](explorations/config.exp1.sh) | 5.7    | md\*             | 6               |        |
+ [exp2](explorations/config.exp2.sh) | 5.8    | md\*             | 6               | 9.33s  | 15.3s
+ [exp3](explorations/config.exp3.sh) | 4.19   | dm-crypt + btrfs | raid1/raid1     |        |
+ [exp4](explorations/config.exp4.sh) | 5.8    | dm-crypt + btrfs | raid6/raid6     |        |
+ [exp5](explorations/config.exp5.sh) | 5.8    | dm-crypt + btrfs | raid6/raid1c3   |        |
+ [exp6](explorations/config.exp6.sh) | 5.8    | dm-crypt + btrfs | raid1c3/raid1c3 | 29.79s | 10.92s
+ [exp7](explorations/config.exp7.sh) | 4.19   | dm-crypt + zfs   | raidz2          |        |
+ [exp8](explorations/config.exp8.sh) | 5.8    | dm-crypt + zfs   | raidz2          | 12.21s | 2.89s
 
 ## details
+
+### common
+
+if the boot or efi partitions are corrupted, as is the case when
+the entire drive is truncated, you will be dropped to the recovery
+shell after a ~45s pause.
+
+you will need to take manual steps to correct:
+
+```
+# mdadm --run /dev/md0
+# mount /boot
+# mount /dev/md0 /boot/efi
+```
+
+ensure that `/proc/mdstat` does not show `auto-read-only` for
+any of the arrays and then reboot.
 
 ### exp0: linux <5.4-rc1 + dm-integrity + md considered harmful
 
@@ -484,6 +503,18 @@ Write 1,000 bytes to random positions on all four drives:
 depending on which files are corrupted (luck), you may be kicked
 to initramfs. zpool reassembly should still work.
 
+## references
+
+[Debian Buster Root on ZFS](https://openzfs.github.io/openzfs-docs/Getting Started/Debian/Debian Buster Root on ZFS.html)
+
+[Battle testing ZFS, Btrfs and mdadm+dm-integrity](https://www.unixsheikh.com/articles/battle-testing-zfs-btrfs-and-mdadm-dm.html)
+
+[dm-crypt + dm-integrity + dm-raid = awesome!](https://gist.github.com/MawKKe/caa2bbf7edcc072129d73b61ae7815fb)
+
+[RAID Doesn't work!](https://securitypitfalls.wordpress.com/2018/05/08/raid-doesnt-work/)
+
+[DMIntegrity wiki](https://gitlab.com/cryptsetup/cryptsetup/-/wikis/DMIntegrity)
+
 ## appendix
 
 ### random\_write
@@ -528,7 +559,7 @@ if you are having difficulty mounting the array, boot into the LiveCD, modify
 ## replacing devices
 
 if you need to replace disks in the array, you can add them back to the array
-by adding **only** the spare drives to `RAID_DEVICES` and running:
+by adding **only** the spare drives to `REPLACE_DISKS_GLOB` and running:
 
 ```
 ./replace.sh
