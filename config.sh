@@ -52,10 +52,10 @@ DISKS=($(eval echo "$DISKS_GLOB"))
 
 DISKS_DEVICES=($(eval echo "/dev/${DISKS_GLOB}"))
 
-REPLACE_DISKS=($(eval echo "$REPLACE_DISKS_GLOB"))
-
-REPLACE_DISKS_DEVICES=($(eval echo "/dev/${REPLACE_DISKS_GLOB}"))
-
 EFI_DEVICES=($(eval echo "/dev/${DISKS_GLOB}${DISKS_PART_PREFIX}1"))
 
-REPLACE_EFI_DEVICES=($(eval echo "/dev/${REPLACE_DISKS_GLOB}${DISKS_PART_PREFIX}1"))
+if [[ -n "$REPLACE_DISKS_GLOB" ]]; then
+    REPLACE_DISKS=($(eval echo "$REPLACE_DISKS_GLOB"))
+    REPLACE_DISKS_DEVICES=($(eval echo "/dev/${REPLACE_DISKS_GLOB}"))
+    REPLACE_EFI_DEVICES=($(eval echo "/dev/${REPLACE_DISKS_GLOB}${DISKS_PART_PREFIX}1"))
+fi
