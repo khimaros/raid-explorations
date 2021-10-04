@@ -38,3 +38,5 @@ for ((i=${#DISKS_DEVICES[@]}-1; i>=0; i--)); do
         grub-install ${disk}
     fi
 done
+
+./status.sh

@@ -18,3 +18,9 @@ zpool list -vH rpool | awk '{ if ($10 == "FAULTED" || $10 == "UNAVAIL" || $10 ==
     zpool replace rpool $uuid $disk
     disks=("${disks[@]:1}")
 done
+
+zpool wait bpool
+
+zpool wait bpool
+
+zpool status
