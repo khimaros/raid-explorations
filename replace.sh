@@ -7,9 +7,9 @@ set -ex
 
 # IMPORTANT: Update DISKS_GLOB in config.sh before running.
 
-for disk in "${DISK_DEVICES[@]}"; do
-    mdadm --fail /dev/md0 $disk || true
-    mdadm --remove /dev/md0 $disk || true
+for disk in "${DISKS_DEVICES[@]}"; do
+    mdadm --fail /dev/md0 ${disk}1 || true
+    mdadm --remove /dev/md0 ${disk}1 || true
 done
 
 ./partition.sh
