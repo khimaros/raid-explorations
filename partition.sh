@@ -7,6 +7,11 @@ set -ex
 
 apt install -y gdisk dosfstools
 
+if [[ -n "$REPLACE_DISKS_GLOB" ]]; then
+  DISKS=("${REPLACE_DISKS[@]}")
+  DISKS_DEVICES=("${REPLACE_DISKS_DEVICES[@]}")
+fi
+
 wipefs -a "${DISKS_DEVICES[@]}"
 
 sync "${DISKS_DEVICES[@]}"
