@@ -7,6 +7,6 @@ set -ex
 
 for disk in "${REPLACE_DISKS[@]}"; do
     dev="/dev/${dev}"
-		#btrfs device remove / 
-		cryptsetup luksClose "${disk}3_crypt" || true
+    #btrfs device remove /
+    cryptsetup luksClose "${disk}3_crypt" || true
 done

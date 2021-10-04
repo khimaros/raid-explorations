@@ -15,8 +15,6 @@ btrfs scrub start -B /mnt
 
 mkfs.btrfs -f --csum sha256 -m raid1c3 -d raid1c3 "${BOOT_DEVICES[@]}"
 
-#mkfs.ext4 -F -m 0 ${DISKS_DEVICES[0]}${DISKS_PART_PREFIX}2
-
 mkdir /mnt/boot
 
 mount ${BOOT_DEVICES} /mnt/boot
