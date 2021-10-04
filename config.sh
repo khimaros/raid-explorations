@@ -1,3 +1,7 @@
+############################
+# RAID ARRAY CONFIGURATION #
+############################
+
 # debian release to bootstrap
 DEBIAN_RELEASE="bullseye"
 
@@ -9,6 +13,9 @@ EXTRA_PACKAGES=(vim git screen)
 
 # device files to use in raid array
 DISKS_GLOB="sd{a,b,c,d}"
+
+# devices to reformate and replace in the array
+#REPLACE_DISKS_GLOB="sd{a,c}"
 
 # for nvme drives this is usually "p"
 DISKS_PART_PREFIX=""
@@ -35,3 +42,20 @@ RAID_LEVEL="6"
 # defaults to $RAID_LEVEL
 #   btrfs: raid1, raid1c3, raid5, raid6, raid10
 #RAID_METADATA_LEVEL="raid1c3"
+
+
+###################################
+# INTERNAL ONLY BEYOND THIS POINT #
+###################################
+
+DISKS=($(eval echo "$DISKS_GLOB"))
+
+DISKS_DEVICES=($(eval echo "/dev/${DISKS_GLOB}"))
+
+REPLACE_DISKS=($(eval echo "$REPLACE_DISKS_GLOB"))
+
+REPLACE_DISKS_DEVICES=($(eval echo "/dev/${REPLACE_DISKS_GLOB}"))
+
+EFI_DEVICES=($(eval echo "/dev/${DISKS_GLOB}${DISKS_PART_PREFIX}1"))
+
+REPLACE_EFI_DEVICES=($(eval echo "/dev/${REPLACE_DISKS_GLOB}${DISKS_PART_PREFIX}1"))

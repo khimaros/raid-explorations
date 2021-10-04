@@ -24,8 +24,6 @@ done
 ./partition.sh
 
 if [[ "$BOOT_MODE" = "efi" ]]; then
-    EFI_DEVICES=($(eval echo "/dev/${DISKS_GLOB}${DISKS_PART_PREFIX}1"))
-
     mdadm --zero-superblock --metadata=1.0 "${EFI_DEVICES[@]}" || true
 
     mdadm --create --metadata=1.0 /dev/md0 --level=1 --raid-devices=4 --bitmap=internal "${EFI_DEVICES[@]}"

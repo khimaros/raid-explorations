@@ -5,15 +5,16 @@ set -ex
 . ./config.sh
 . ./${RAID_EXPLORATION}/common.sh
 
-# IMPORTANT: Update DISKS_GLOB in config.sh before running.
+if [[ -z "$REPLACE_DISKS_GLOB" ]]; then
+    echo "[!!] you MUST specify REPLACE_DISKS_GLOB before execution"
+fi
 
 ./remove.sh
 
 ./partition.sh
 
 if [[ "$BOOT_MODE" = "efi" ]]; then
-    EFI_DEVICES=($(eval echo "/dev/${DISKS_GLOB}${DISKS_PART_PREFIX}1"))
-		for dev in "${EFI_DEVICES[@]}"; do
+		for dev in "${REPLACE_EFI_DEVICES[@]}"; do
         mdadm --add /dev/md0 "$dev"
     done
 fi
@@ -26,8 +27,8 @@ fi
 
 ./${RAID_EXPLORATION}/replace.sh
 
-for ((i=${#DISKS_DEVICES[@]}-1; i>=0; i--)); do
-    disk="${DISKS_DEVICES[$i]}"
+for ((i=${#REPLACE_DISKS_DEVICES[@]}-1; i>=0; i--)); do
+    disk="${REPLACE_DISKS_DEVICES[$i]}"
     if [[ "$BOOT_MODE" = "efi" ]]; then
         label="debian-${disk##/dev/}"
         efibootmgr -c -g -d ${disk} -p 1 -L "$label" -l '\EFI\debian\grubx64.efi'
