@@ -7,6 +7,7 @@ set -ex
 
 if [[ -z "$REPLACE_DISKS_GLOB" ]]; then
     echo "[!!] you MUST specify REPLACE_DISKS_GLOB before execution"
+		exit 1
 fi
 
 ./remove.sh
