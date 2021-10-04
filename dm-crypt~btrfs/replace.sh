@@ -10,7 +10,11 @@ for dev in "${REPLACE_BOOT_DEVICES[@]}"; do
     btrfs device remove missing /boot
 done
 
+btrfs balance start --full-balance /boot
+
 for dev in "${REPLACE_CRYPT_DEVICES[@]}"; do
     btrfs device add $dev /
     btrfs device remove missing /
 done
+
+btrfs balance start --full-balance /
