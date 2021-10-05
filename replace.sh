@@ -20,10 +20,6 @@ if [[ "$BOOT_MODE" = "efi" ]]; then
     done
 fi
 
-if [[ -f "./${RAID_EXPLORATION}/clone.sh" ]]; then
-    ./${RAID_EXPLORATION}/clone.sh
-fi
-
 ./${RAID_EXPLORATION}/map.sh
 
 ./${RAID_EXPLORATION}/replace.sh
