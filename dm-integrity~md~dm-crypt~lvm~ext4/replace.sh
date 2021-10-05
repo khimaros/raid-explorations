@@ -14,3 +14,7 @@ for dev in "${REPLACE_ROOT_DEVICES[@]}"; do
     mdadm --zero-superblock "$dev" || true
     mdadm --add /dev/${ROOT_MD} "$dev"
 done
+
+mdadm --wait /dev/${BOOT_MD}
+
+mdadm --wait /dev/${ROOT_MD}
