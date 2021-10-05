@@ -71,6 +71,19 @@ $ sudo -i
 
 ## overview
 
+### comparison
+
+ requirement          | md\* raid6 | dm-crypt + btrfs raid1c3/raid1c3 | dm-crypt + zfs raidz2
+ -------------------- | ---------- | -------------------------------- | ---------------------
+ space efficiency     | C          | B                                | A
+ performance          | B          | D                                | A
+ remote unlock        | A          | A                                | A
+ full disk encryption | A          | A                                | A
+ resilience           | A          | A                                | A
+ recovery             | A          | C                                | B
+ system integration   | A          | B                                | D
+ predictability       | A          | B                                | B
+
 ### resilience
 
  id                                  | kernel | stack            | level           | 1MB @ 2/4 | 1KB @ 4/4 | 1MB @ 1/2
