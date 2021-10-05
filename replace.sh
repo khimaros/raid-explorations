@@ -10,6 +10,8 @@ if [[ -z "$REPLACE_DISKS_GLOB" ]]; then
     exit 1
 fi
 
+export REPLACE_MODE=1
+
 ./remove.sh
 
 ./partition.sh
