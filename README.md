@@ -518,7 +518,7 @@ to initramfs. zpool reassembly should still work.
 
 ## references
 
-[Debian Buster Root on ZFS](https://openzfs.github.io/openzfs-docs/Getting Started/Debian/Debian Buster Root on ZFS.html)
+[Debian Buster Root on ZFS](https://openzfs.github.io/openzfs-docs/Getting%20Started/Debian/Debian%20Buster%20Root%20on%20ZFS.html)
 
 [Battle testing ZFS, Btrfs and mdadm+dm-integrity](https://www.unixsheikh.com/articles/battle-testing-zfs-btrfs-and-mdadm-dm.html)
 
