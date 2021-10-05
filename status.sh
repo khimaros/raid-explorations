@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -ex
+set -e
 
 . ./config.sh
 . ./${RAID_EXPLORATION}/common.sh

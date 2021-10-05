@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -ex
+set -e
 
 . "$(dirname "$0")/../config.sh"
 . "$(dirname "$0")/common.sh"
@@ -11,6 +11,7 @@ btrfs device stats /
 
 btrfs scrub status -d /
 
+echo
 echo "checksum errors:"
-
+echo
 dmesg -c | grep "checksum error at" | grep "(path:" | sed -n -r 's#.*BTRFS.*i/o error.*path: (.*)\)#\1#p'

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -ex
+set -e
 
 . "$(dirname "$0")/../config.sh"
 . "$(dirname "$0")/common.sh"
