@@ -27,12 +27,6 @@ apt install -y "${EXTRA_PACKAGES[@]}"
 
 apt install -y locales
 
-#apt install -y console-setup
-
-#dpkg-reconfigure locales
-#dpkg-reconfigure keyboard-configuration
-#dpkg-reconfigure tzdata
-
 apt install -y linux-image-amd64
 
 ETHDEV=$(ip addr show | awk '/inet.*brd/{print $NF; exit}')

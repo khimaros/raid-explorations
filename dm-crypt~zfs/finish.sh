@@ -12,6 +12,13 @@ for disk in "${DISKS[@]}"; do
     echo "${disk}${DISKS_PART_PREFIX}3_crypt UUID=${uuid} none luks,discard,initramfs,keyscript=decrypt_keyctl"
 done > /mnt/etc/crypttab
 
+# Backup the LUKS headers onto /boot
+mkdir -p /mnt/boot/luks/
+for disk in "${DISKS[@]}"; do
+    dev="/dev/${disk}3"
+    cryptsetup luksHeaderBackup ${dev} --header-backup-file /mnt/boot/luks/${disk}3-headers.bin
+done
+
 echo REMAKE_INITRD=yes > /mnt/etc/dkms/zfs.conf
 
 cat <<EOF > /mnt/etc/default/grub.d/zfs.cfg
