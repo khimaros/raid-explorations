@@ -18,7 +18,7 @@ export REPLACE_MODE=1
 
 if [[ "$BOOT_MODE" = "efi" ]]; then
 		for dev in "${REPLACE_EFI_DEVICES[@]}"; do
-        mdadm --add /dev/md0 "$dev"
+        mdadm --add /dev/md/efi "$dev"
     done
 fi
 
