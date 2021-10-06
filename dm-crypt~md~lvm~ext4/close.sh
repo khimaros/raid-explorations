@@ -5,9 +5,11 @@ set -ex
 . "$(dirname "$0")/../config.sh"
 . "$(dirname "$0")/common.sh"
 
-zpool destroy rpool || true
+mdadm --stop ${BOOT_MD_DEVICE} || true
 
-zpool destroy bpool || true
+vgchange -a n vg0 || true
+
+mdadm --stop ${ROOT_MD_DEVICE} || true
 
 for dev in "${CRYPT_NAMES[@]}"; do
     cryptsetup luksClose ${dev} || true
