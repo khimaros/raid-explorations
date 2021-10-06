@@ -9,10 +9,10 @@ for disk in "${DISKS[@]}"; do
     integritysetup open "${INTEGRITYSETUP_OPTS[@]}" /dev/${disk}${DISKS_PART_PREFIX}3 ${disk}${DISKS_PART_PREFIX}3_int
 done
 
-while [[ ! -b /dev/${ROOT_MD} ]]; do sleep 1; done
-#mdadm --run /dev/${ROOT_MD}
+while [[ ! -b ${ROOT_MD_DEVICE} ]]; do sleep 1; done
+#mdadm --run ${ROOT_MD_DEVICE}
 
-cryptsetup luksOpen /dev/${ROOT_MD} ${ROOT_MD}_crypt
+cryptsetup luksOpen ${ROOT_MD_DEVICE} ${ROOT_CRYPT_NAME}
 
 while [[ ! -b /dev/vg0/root ]]; do sleep 1; done
 
@@ -22,4 +22,4 @@ mount /dev/vg0/root /mnt
 
 mkdir -p /mnt/boot
 
-mount /dev/${BOOT_MD} /mnt/boot
+mount ${BOOT_MD_DEVICE} /mnt/boot

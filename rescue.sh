@@ -11,4 +11,4 @@ apt install -y "${RAID_PACKAGES[@]}"
 
 ./${RAID_EXPLORATION}/mount.sh
 
-mount /dev/md0 /mnt/boot/efi
+mount /dev/md/efi /mnt/boot/efi

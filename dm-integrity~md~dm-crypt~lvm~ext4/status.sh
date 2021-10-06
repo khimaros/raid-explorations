@@ -5,6 +5,6 @@ set -e
 . "$(dirname "$0")/../config.sh"
 . "$(dirname "$0")/common.sh"
 
-mdadm --detail /dev/${BOOT_MD}
+mdadm --detail ${BOOT_MD_DEVICE}
 
-mdadm --detail /dev/${ROOT_MD}
+mdadm --detail ${ROOT_MD_DEVICE}

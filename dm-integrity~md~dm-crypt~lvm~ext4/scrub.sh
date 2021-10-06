@@ -5,10 +5,10 @@ set -ex
 . "$(dirname "$0")/../config.sh"
 . "$(dirname "$0")/common.sh"
 
-mdadm --action=check /dev/${BOOT_MD}
+mdadm --action=check ${BOOT_MD_DEVICE}
 
-mdadm --wait /dev/${BOOT_MD}
+mdadm --wait ${BOOT_MD_DEVICE}
 
-mdadm --action=check /dev/${ROOT_MD}
+mdadm --action=check ${ROOT_MD_DEVICE}
 
-mdadm --wait /dev/${ROOT_MD}
+mdadm --wait ${ROOT_MD_DEVICE}

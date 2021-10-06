@@ -26,11 +26,11 @@ done
 if [[ "$BOOT_MODE" = "efi" ]]; then
     mdadm --zero-superblock --metadata=1.0 "${EFI_DEVICES[@]}" || true
 
-    mdadm --create --metadata=1.0 /dev/md0 --level=1 --raid-devices=4 --bitmap=internal "${EFI_DEVICES[@]}"
+    mdadm --create --metadata=1.0 --name=efi /dev/md/efi --level=1 --raid-devices=4 --bitmap=internal "${EFI_DEVICES[@]}"
 
-    wipefs -a /dev/md0
+    wipefs -a /dev/md/efi
 
-    mkfs.msdos -F 32 -s 1 -n EFI /dev/md0
+    mkfs.msdos -F 32 -s 1 -n EFI /dev/md/efi
 fi
 
 apt install -y "${RAID_PACKAGES[@]}"

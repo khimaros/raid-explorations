@@ -12,5 +12,5 @@ mount --rbind /run /mnt/run
 
 if [[ "$BOOT_MODE" = "efi" ]]; then
     mkdir /mnt/boot/efi
-    mount /dev/md0 /mnt/boot/efi
+    mount /dev/md/efi /mnt/boot/efi
 fi

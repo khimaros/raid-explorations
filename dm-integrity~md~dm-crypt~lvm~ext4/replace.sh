@@ -7,14 +7,14 @@ set -ex
 
 for dev in "${REPLACE_BOOT_DEVICES[@]}"; do
     mdadm --zero-superblock "$dev" || true
-    mdadm --add /dev/${BOOT_MD} "$dev"
+    mdadm --add ${BOOT_MD_DEVICE} "$dev"
 done
 
 for dev in "${REPLACE_ROOT_DEVICES[@]}"; do
     mdadm --zero-superblock "$dev" || true
-    mdadm --add /dev/${ROOT_MD} "$dev"
+    mdadm --add ${ROOT_MD_DEVICE} "$dev"
 done
 
-mdadm --wait /dev/${BOOT_MD}
+mdadm --wait ${BOOT_MD_DEVICE}
 
-mdadm --wait /dev/${ROOT_MD}
+mdadm --wait ${ROOT_MD_DEVICE}

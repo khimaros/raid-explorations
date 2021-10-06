@@ -7,25 +7,25 @@ set -ex
 
 mdadm --zero-superblock --metadata=1.0 "${BOOT_DEVICES[@]}" || true
 
-mdadm --create --metadata=1.0 --level=1 --raid-devices=4 --bitmap=internal /dev/${BOOT_MD} "${BOOT_DEVICES[@]}"
+mdadm --create --name=${BOOT_MD_NAME} --metadata=1.0 --level=1 --raid-devices=4 --bitmap=internal ${BOOT_MD_DEVICE} "${BOOT_DEVICES[@]}"
 
-wipefs -a /dev/${BOOT_MD}
+wipefs -a ${BOOT_MD_DEVICE}
 
-mkfs.ext4 -m 0 /dev/${BOOT_MD}
+mkfs.ext4 -m 0 ${BOOT_MD_DEVICE}
 
 mdadm --zero-superblock "${ROOT_DEVICES[@]}" || true
 
-mdadm --create --level=${RAID_LEVEL} --raid-devices=4 --bitmap=internal /dev/${ROOT_MD} "${ROOT_DEVICES[@]}"
+mdadm --create --name=${ROOT_MD_NAME} --level=${RAID_LEVEL} --raid-devices=4 --bitmap=internal ${ROOT_MD_DEVICE} "${ROOT_DEVICES[@]}"
 
-wipefs -a /dev/${ROOT_MD}
+wipefs -a ${ROOT_MD_DEVICE}
 
-cryptsetup -q luksFormat --sector-size=4096 "${CRYPTSETUP_OPTS[@]}" /dev/${ROOT_MD}
+cryptsetup -q luksFormat --sector-size=4096 "${CRYPTSETUP_OPTS[@]}" ${ROOT_MD_DEVICE}
 
-cryptsetup luksOpen /dev/${ROOT_MD} ${ROOT_MD}_crypt
+cryptsetup luksOpen ${ROOT_MD_DEVICE} ${ROOT_CRYPT_NAME}
 
-pvcreate /dev/mapper/${ROOT_MD}_crypt
+pvcreate ${ROOT_CRYPT_DEVICE}
 
-vgcreate vg0 /dev/mapper/${ROOT_MD}_crypt
+vgcreate vg0 ${ROOT_CRYPT_DEVICE}
 
 lvcreate --extents=90%FREE --name=root vg0
 
@@ -35,4 +35,4 @@ mount /dev/vg0/root /mnt
 
 mkdir /mnt/boot
 
-mount /dev/${BOOT_MD} /mnt/boot
+mount ${BOOT_MD_DEVICE} /mnt/boot
