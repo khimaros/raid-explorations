@@ -10,11 +10,11 @@ for dev in "${REPLACE_BOOT_DEVICES[@]}"; do
     mdadm --add ${BOOT_MD_DEVICE} "$dev"
 done
 
+mdadm --wait ${BOOT_MD_DEVICE}
+
 for dev in "${REPLACE_ROOT_DEVICES[@]}"; do
     mdadm --zero-superblock "$dev" || true
     mdadm --add ${ROOT_MD_DEVICE} "$dev"
 done
-
-mdadm --wait ${BOOT_MD_DEVICE}
 
 mdadm --wait ${ROOT_MD_DEVICE}

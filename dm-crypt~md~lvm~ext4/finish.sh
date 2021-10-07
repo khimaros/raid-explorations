@@ -28,6 +28,7 @@ echo "${BOOT_MD_DEVICE} /boot ext4 rw,relatime,errors=remount-ro 0 0" >> /mnt/et
 
 # Configure the initrd with dm_integrity module.
 mkdir -p /mnt/etc/initramfs-tools/hooks/
+
 cat <<EOF > /mnt/etc/initramfs-tools/hooks/integrity
 #!/bin/sh
 PREREQ=""
@@ -49,6 +50,7 @@ esac
 
 force_load dm_integrity
 EOF
+
 chmod ug+x /mnt/etc/initramfs-tools/hooks/integrity
 
-chroot /mnt update-initramfs -u -k all
+chroot /mnt update-initramfs -c -k all

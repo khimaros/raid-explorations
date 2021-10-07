@@ -13,7 +13,8 @@ umount /mnt/proc || true
 umount /mnt/dev || true
 
 umount /mnt/boot/efi || true
-umount /mnt/boot || true
-umount /mnt || true
+
+#mount | grep -v zfs | tac | awk '/\/mnt/ {print $3}' | \
+#    xargs -i{} umount -lf {}
 
 ./${RAID_EXPLORATION}/close.sh || true

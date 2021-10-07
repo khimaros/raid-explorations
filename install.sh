@@ -9,8 +9,6 @@ apt install -y debootstrap
 
 debootstrap ${DEBIAN_RELEASE} /mnt/
 
-./bind.sh
-
 if [[ -f "./${RAID_EXPLORATION}/apt.sh" ]]; then
     cp "./${RAID_EXPLORATION}/apt.sh" /mnt/apt.sh
 fi
@@ -20,6 +18,8 @@ cp "./${RAID_EXPLORATION}/common.sh" /mnt/common.sh
 cp chroot.sh /mnt/chroot.sh
 
 chmod +x /mnt/chroot.sh
+
+./bind.sh
 
 chroot /mnt /chroot.sh
 

@@ -47,4 +47,4 @@ EOF
 
 chmod ug+x /mnt/etc/initramfs-tools/hooks/integrity
 
-chroot /mnt update-initramfs -u -k all
+chroot /mnt update-initramfs -c -k all
