@@ -28,5 +28,3 @@ EOF
 chroot /mnt update-grub
 
 chroot /mnt update-initramfs -c -k all
-
-zpool export -a

@@ -14,7 +14,7 @@ umount /mnt/dev || true
 
 umount /mnt/boot/efi || true
 
-#mount | grep -v zfs | tac | awk '/\/mnt/ {print $3}' | \
-#    xargs -i{} umount -lf {}
+mount | tac | awk '/\/mnt/ {print $3}' | \
+    xargs -i{} umount -lf {}
 
 ./${RAID_EXPLORATION}/close.sh || true
