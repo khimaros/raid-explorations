@@ -86,21 +86,17 @@ $ sudo -i
 
 ### resilience
 
- id                                  | kernel | stack            | level           | 1MB @ 2/4 | 1KB @ 4/4 | 1MB @ 1/2
- ----------------------------------- | ------ | ---------------- | --------------- | --------- | --------- | ---------
- [exp0](explorations/config.exp0.sh) | 4.19   | md\*             | 6               | FAIL\*\*  | N/A       | N/A
- [exp1](explorations/config.exp1.sh) | 5.7    | md\*             | 6               | OKAY      | OKAY      | N/A
- [exp2](explorations/config.exp2.sh) | 5.8    | md\*             | 6               | OKAY      | OKAY      | N/A
- [exp3](explorations/config.exp3.sh) | 4.19   | dm-crypt + btrfs | raid1/raid1     | N/A       | N/A       | OKAY
- [exp4](explorations/config.exp4.sh) | 5.8    | dm-crypt + btrfs | raid6/raid6     | FAIL      | N/A       | N/A
- [exp5](explorations/config.exp5.sh) | 5.8    | dm-crypt + btrfs | raid6/raid1c3   | FAIL      | N/A       | N/A
- [exp6](explorations/config.exp6.sh) | 5.8    | dm-crypt + btrfs | raid1c3/raid1c3 | OKAY      | OKAY      | N/A
- [exp7](explorations/config.exp7.sh) | 4.19   | dm-crypt + zfs   | raidz2          | OKAY      | OKAY      | N/A
- [exp8](explorations/config.exp8.sh) | 5.8    | dm-crypt + zfs   | raidz2          | ?         | ?         | N/A
-
-\* dm-integrity + md + dm-crypt + lvm + ext4
-
-\*\* fails with as few as 100 bytes of corruption
+ id                                  | kernel | stack            | level           | 1MB @ 2/4  | 1KB @ 4/4 | 1MB @ 1/2
+ ----------------------------------- | ------ | ---------------- | --------------- | ---------- | --------- | ---------
+ [exp0](explorations/config.exp0.sh) | 4.19   | md-stacked\*     | 6               | FAIL\*\*\* | N/A       | N/A
+ [exp1](explorations/config.exp1.sh) | 5.7    | md-stacked\*     | 6               | OKAY       | OKAY      | N/A
+ [exp2](explorations/config.exp2.sh) | 5.8    | md-stacked\*     | 6               | OKAY       | OKAY      | N/A
+ [exp3](explorations/config.exp3.sh) | 4.19   | dm-crypt + btrfs | raid1/raid1     | N/A        | N/A       | OKAY
+ [exp4](explorations/config.exp4.sh) | 5.8    | dm-crypt + btrfs | raid6/raid6     | FAIL       | N/A       | N/A
+ [exp5](explorations/config.exp5.sh) | 5.8    | dm-crypt + btrfs | raid6/raid1c3   | FAIL       | N/A       | N/A
+ [exp6](explorations/config.exp6.sh) | 5.8    | dm-crypt + btrfs | raid1c3/raid1c3 | OKAY       | OKAY      | N/A
+ [exp7](explorations/config.exp7.sh) | 4.19   | dm-crypt + zfs   | raidz2          | OKAY       | OKAY      | N/A
+ [exp8](explorations/config.exp8.sh) | 5.8    | dm-crypt + zfs   | raidz2          | ?          | ?         | N/A
 
 ### performance
 
@@ -108,15 +104,14 @@ lower is better. see `tests/benchmark.sh`.
 
  id                                  | kernel | stack            | level           | rndwr  | seqwr
  ----------------------------------- | ------ | ---------------- | --------------- | ------ | -----
- [exp0](explorations/config.exp0.sh) | 4.19   | md\*             | 6               |        |
- [exp1](explorations/config.exp1.sh) | 5.7    | md\*             | 6               |        |
- [exp2](explorations/config.exp2.sh) | 5.8    | md\*             | 6               | 9.33s  | 15.3s
- [exp3](explorations/config.exp3.sh) | 4.19   | dm-crypt + btrfs | raid1/raid1     |        |
- [exp4](explorations/config.exp4.sh) | 5.8    | dm-crypt + btrfs | raid6/raid6     |        |
- [exp5](explorations/config.exp5.sh) | 5.8    | dm-crypt + btrfs | raid6/raid1c3   |        |
- [exp6](explorations/config.exp6.sh) | 5.8    | dm-crypt + btrfs | raid1c3/raid1c3 | 29.79s | 10.92s
- [exp7](explorations/config.exp7.sh) | 4.19   | dm-crypt + zfs   | raidz2          |        |
- [exp8](explorations/config.exp8.sh) | 5.8    | dm-crypt + zfs   | raidz2          | 12.21s | 2.89s
+ [exp8](explorations/config.exp8.sh) | 5.10   | dm-crypt + zfs   | raidz2          | 12.21s | 2.89s
+ [exp9](explorations/config.exp9.sh) | 5.10   | md-combined\*\*  | 6               | 15.03s |
+ [exp2](explorations/config.exp2.sh) | 5.10   | md-stacked\*     | 6               | 18.97s | 7.45s
+ [exp6](explorations/config.exp6.sh) | 5.10   | dm-crypt + btrfs | raid1c3/raid1c3 | 29.79s | 15.3s
+
+\* dm-integrity + md + dm-crypt + lvm + ext4
+\*\* dm-crypt (integrity) + md + lvm + ext4
+\*\*\* fails with as few as 100 bytes of corruption
 
 ## details
 
