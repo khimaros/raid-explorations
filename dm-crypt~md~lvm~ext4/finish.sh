@@ -3,6 +3,7 @@
 set -ex
 
 . "$(dirname "$0")/../config.sh"
+. "$(dirname "$0")/../options.sh"
 . "$(dirname "$0")/common.sh"
 
 chroot /mnt apt install -y keyutils
@@ -24,7 +25,7 @@ done
 
 # Generate /etc/fstab
 echo "/dev/vg0/root / ext4 rw,relatime,errors=remount-ro 0 0" >> /mnt/etc/fstab
-echo "${BOOT_MD_DEVICE} /boot ext4 rw,relatime,errors=remount-ro 0 0" >> /mnt/etc/fstab
+#echo "${BOOT_MD_DEVICE} /boot ext4 rw,relatime,errors=remount-ro 0 0" >> /mnt/etc/fstab
 
 # Configure the initrd with dm_integrity module.
 mkdir -p /mnt/etc/initramfs-tools/hooks/

@@ -3,15 +3,16 @@
 set -ex
 
 . "$(dirname "$0")/../config.sh"
+. "$(dirname "$0")/../options.sh"
 . "$(dirname "$0")/common.sh"
 
-mdadm --zero-superblock --metadata=1.0 "${BOOT_DEVICES[@]}" || true
+#mdadm --zero-superblock --metadata=1.0 "${BOOT_DEVICES[@]}" || true
 
-mdadm --create --name=${BOOT_MD_NAME} --metadata=1.0 --level=1 --raid-devices=4 --bitmap=internal ${BOOT_MD_DEVICE} "${BOOT_DEVICES[@]}"
+#mdadm --create --name=${BOOT_MD_NAME} --metadata=1.0 --level=1 --raid-devices=4 --bitmap=internal ${BOOT_MD_DEVICE} "${BOOT_DEVICES[@]}"
 
-wipefs -a ${BOOT_MD_DEVICE}
+#wipefs -a ${BOOT_MD_DEVICE}
 
-mkfs.ext4 -m 0 ${BOOT_MD_DEVICE}
+#mkfs.ext4 -m 0 ${BOOT_MD_DEVICE}
 
 mdadm --zero-superblock "${ROOT_DEVICES[@]}" || true
 
@@ -19,9 +20,9 @@ mdadm --create --name=${ROOT_MD_NAME} --level=${RAID_LEVEL} --raid-devices=4 --b
 
 wipefs -a ${ROOT_MD_DEVICE}
 
-cryptsetup -q luksFormat --sector-size=4096 "${CRYPTSETUP_OPTS[@]}" ${ROOT_MD_DEVICE}
+echo "$CRYPT_PASSWORD" | cryptsetup -q luksFormat --sector-size=4096 "${CRYPTSETUP_OPTS[@]}" ${ROOT_MD_DEVICE}
 
-cryptsetup luksOpen ${ROOT_MD_DEVICE} ${ROOT_CRYPT_NAME}
+echo "$CRYPT_PASSWORD" | cryptsetup luksOpen ${ROOT_MD_DEVICE} ${ROOT_CRYPT_NAME}
 
 pvcreate ${ROOT_CRYPT_DEVICE}
 
@@ -33,6 +34,6 @@ mkfs.ext4 -m 0 /dev/vg0/root
 
 mount /dev/vg0/root /mnt
 
-mkdir /mnt/boot
+#mkdir /mnt/boot
 
-mount ${BOOT_MD_DEVICE} /mnt/boot
+#mount ${BOOT_MD_DEVICE} /mnt/boot

@@ -24,7 +24,10 @@ DISKS_PART_PREFIX=""
 CRYPTSETUP_OPTS=(--cipher=aes-xts-plain64 --key-size=512 --hash=sha256)
 
 # extra args to pass to integritysetup
-INTEGRITYSETUP_OPTS=(--integrity=sha1)
+INTEGRITYSETUP_OPTS=(--integrity=hmac-sha256)
+
+# extra args to pass to mdadm when creating boot and efi arrays
+MDADM_BOOT_OPTS=(--metadata=1.0 --level=1 --raid-devices=4 --bitmap=internal)
 
 # enable uefi boot
 #BOOT_MODE="efi"
@@ -41,21 +44,4 @@ RAID_LEVEL="6"
 # raid level to use for metadata
 # defaults to $RAID_LEVEL
 #   btrfs: raid1, raid1c3, raid5, raid6, raid10
-#RAID_METADATA_LEVEL="raid1c3"
-
-
-###################################
-# INTERNAL ONLY BEYOND THIS POINT #
-###################################
-
-DISKS=($(eval echo "$DISKS_GLOB"))
-
-DISKS_DEVICES=($(eval echo "/dev/${DISKS_GLOB}"))
-
-EFI_DEVICES=($(eval echo "/dev/${DISKS_GLOB}${DISKS_PART_PREFIX}1"))
-
-if [[ -n "$REPLACE_DISKS_GLOB" ]]; then
-    REPLACE_DISKS=($(eval echo "$REPLACE_DISKS_GLOB"))
-    REPLACE_DISKS_DEVICES=($(eval echo "/dev/${REPLACE_DISKS_GLOB}"))
-    REPLACE_EFI_DEVICES=($(eval echo "/dev/${REPLACE_DISKS_GLOB}${DISKS_PART_PREFIX}1"))
-fi
+#RAID_METADATA_LEVEL=""

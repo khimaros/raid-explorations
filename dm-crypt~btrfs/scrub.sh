@@ -3,6 +3,7 @@
 set -ex
 
 . "$(dirname "$0")/../config.sh"
+. "$(dirname "$0")/../options.sh"
 . "$(dirname "$0")/common.sh"
 
 log_path=/tmp/raid-explorations.$$

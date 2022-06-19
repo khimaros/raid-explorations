@@ -3,6 +3,7 @@
 set -e
 
 . "$(dirname "$0")/../config.sh"
+. "$(dirname "$0")/../options.sh"
 . "$(dirname "$0")/common.sh"
 
 btrfs filesystem show /

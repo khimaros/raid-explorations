@@ -3,6 +3,7 @@
 set -ex
 
 . "$(dirname "$0")/../config.sh"
+. "$(dirname "$0")/../options.sh"
 . "$(dirname "$0")/common.sh"
 
 uuid=$(blkid -s UUID -o value ${ROOT_MD_DEVICE})
@@ -10,7 +11,7 @@ echo "${ROOT_CRYPT_NAME} UUID=${uuid} none luks,discard" >> /mnt/etc/crypttab
 
 echo "/dev/vg0/root / ext4 rw,relatime,errors=remount-ro 0 0" >> /mnt/etc/fstab
 
-echo "${BOOT_MD_DEVICE} /boot ext4 rw,relatime,errors=remount-ro 0 0" >> /mnt/etc/fstab
+#echo "${BOOT_MD_DEVICE} /boot ext4 rw,relatime,errors=remount-ro 0 0" >> /mnt/etc/fstab
 
 mkdir -p /mnt/etc/udev/rules.d/
 

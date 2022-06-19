@@ -2,9 +2,9 @@
 
 set -ex
 
-zpool scrub -w bpool
+#zpool scrub -w bpool
 
-zpool clear bpool
+#zpool clear bpool
 
 
 zpool scrub -w rpool

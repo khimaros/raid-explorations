@@ -3,5 +3,5 @@
 set -ex
 
 for disk in sd{a,c}; do
-  ./random_write.py /dev/${disk}3 10000 0 0
+  ./random_write.py /dev/${disk} 50000 0 0
 done

@@ -3,6 +3,7 @@
 set -ex
 
 . /config.sh
+. /options.sh
 . /common.sh
 
 export LANG=C.UTF-8
@@ -21,7 +22,7 @@ export DEBIAN_FRONTEND=noninteractive
 
 apt update
 
-apt install -y mdadm "${RAID_PACKAGES[@]}"
+apt install -y gdisk mdadm "${RAID_PACKAGES[@]}"
 
 apt install -y "${EXTRA_PACKAGES[@]}"
 

@@ -3,6 +3,7 @@
 set -ex
 
 . "$(dirname "$0")/../config.sh"
+. "$(dirname "$0")/../options.sh"
 . "$(dirname "$0")/common.sh"
 
 if [[ -n "$REPLACE_MODE" ]]; then
@@ -12,7 +13,7 @@ fi
 for disk in "${DISKS[@]}"; do
     dev="/dev/${disk}${DISKS_PART_PREFIX}3"
 
-    cryptsetup -q luksFormat "${CRYPTSETUP_OPTS[@]}" "${INTEGRITYSETUP_OPTS[@]}" "$dev"
+    echo "$CRYPT_PASSWORD" | cryptsetup -q luksFormat "${CRYPTSETUP_OPTS[@]}" "$dev"
 
     if [[ -n "$REPLACE_MODE" ]]; then
         crypttab_uuid=$(grep "${disk}${DISKS_PART_PREFIX}3_crypt" /etc/crypttab | awk '{ print $2 }' | cut -d= -f2)
@@ -23,5 +24,5 @@ for disk in "${DISKS[@]}"; do
 done
 
 for disk in "${DISKS[@]}"; do
-    cryptsetup luksOpen /dev/${disk}${DISKS_PART_PREFIX}3 ${disk}${DISKS_PART_PREFIX}3_crypt
+    echo "$CRYPT_PASSWORD" | cryptsetup luksOpen /dev/${disk}${DISKS_PART_PREFIX}3 ${disk}${DISKS_PART_PREFIX}3_crypt
 done
